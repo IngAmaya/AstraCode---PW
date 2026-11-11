@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "nombreProyecto": "Residencial Las Flores",
+      "estado": "Obra Gris",
+      "fechaInicio": "2026-01-15",
+      "permisos": { "opamss": true, "marn": true, "anda": false }
+    },
+    {
+      "id": 2,
+      "nombreProyecto": "Apartamentos Vista Verde",
+      "estado": "Diseño",
+      "fechaInicio": "2026-05-01",
+      "permisos": { "opamss": false, "marn": false, "anda": false }
+    }
+  ]
+}
