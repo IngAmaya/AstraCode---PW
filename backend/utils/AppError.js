@@ -3,6 +3,6 @@ class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
   }
-}
+} //Lanza errores que traen un código HTTP
 
 module.exports = AppError;
