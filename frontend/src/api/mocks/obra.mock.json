@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "avances": [
+      { "id": 1, "proyectoId": 1, "partida": "Fundición", "porcentaje": 50, "fecha": "2026-10-01" }
+    ],
+    "partidas": [
+      { "id": 1, "nombre": "Fundición", "costoUnitario": 350 },
+      { "id": 2, "nombre": "Levantado de muros", "costoUnitario": 220 }
+    ]
+  }
+}

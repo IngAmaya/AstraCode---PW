@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "data": {
+    "materiales": [
+      { "id": 1, "nombre": "Cemento", "unidad": "bolsa", "cantidadBodegaCentral": 500 },
+      { "id": 2, "nombre": "Varilla 3/8", "unidad": "unidad", "cantidadBodegaCentral": 1200 }
+    ],
+    "bodegasProyecto": [
+      { "id": 1, "proyectoId": 1, "materialId": 1, "cantidad": 80 }
+    ]
+  }
+}
