@@ -1,37 +1,37 @@
-import axiosConfig from './axiosConfig.js';
+import axiosInstance from './axiosConfig';
+import proyectosMock from './mocks/proyectos.mock.json';
 
-export async function getProyectos(id) {
-  try {
-    const response = await axiosConfig.get(id ? `/proyectos/${id}` : '/proyectos');
-    return response.data;
-  } catch (error) {
-    throw error;
+const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+
+export async function getProyectos() {
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve(proyectosMock.data), 300));
   }
+  const response = await axiosInstance.get('/proyectos');
+  return response.data.data;
+}
+
+export async function getProyectoById(id) {
+  if (useMock) {
+    const found = proyectosMock.data.find((p) => p.id === Number(id));
+    return new Promise((resolve) => setTimeout(() => resolve(found), 300));
+  }
+  const response = await axiosInstance.get(`/proyectos/${id}`);
+  return response.data.data;
 }
 
 export async function createProyecto(data) {
-  try {
-    const response = await axiosConfig.post('/proyectos', data);
-    return response.data;
-  } catch (error) {
-    throw error;
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve({ id: Date.now(), ...data }), 300));
   }
+  const response = await axiosInstance.post('/proyectos', data);
+  return response.data.data;
 }
 
-export async function updateProyecto(id, data) {
-  try {
-    const response = await axiosConfig.put(`/proyectos/${id}`, data);
-    return response.data;
-  } catch (error) {
-    throw error;
+export async function updatePermisos(id, permisos) {
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve({ id, permisos }), 300));
   }
-}
-
-export async function deleteProyecto(id) {
-  try {
-    const response = await axiosConfig.delete(`/proyectos/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await axiosInstance.put(`/proyectos/${id}/permisos`, permisos);
+  return response.data.data;
 }

@@ -1,31 +1,27 @@
-import { useEffect, useState } from 'react';
-import axiosConfig from '../api/axiosConfig.js';
+import { useState, useEffect, useCallback } from 'react';
 
-export default function useFetch(url) {
+export function useFetch(fetchFn, deps = []) {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(Boolean(url));
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!url) return;
-
-    let active = true;
+  const reload = useCallback(async () => {
     setLoading(true);
-    axiosConfig.get(url)
-      .then((response) => {
-        if (active) setData(response.data);
-      })
-      .catch((requestError) => {
-        if (active) setError(requestError);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+    setError(null);
+    try {
+      const result = await fetchFn();
+      setData(result);
+    } catch (err) {
+      setError(err.message || 'Error al cargar datos');
+    } finally {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 
-    return () => {
-      active = false;
-    };
-  }, [url]);
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
-  return { data, loading, error };
+  return { data, loading, error, reload };
 }

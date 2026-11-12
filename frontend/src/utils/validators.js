@@ -1,7 +1,13 @@
 export function isRequired(value) {
-  return String(value ?? '').trim().length > 0;
+  return value !== null && value !== undefined && value.toString().trim() !== '';
 }
 
-export function isEmail(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+export function isPositiveNumber(value) {
+  const num = Number(value);
+  return !isNaN(num) && num >= 0;
+}
+
+export function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
 }

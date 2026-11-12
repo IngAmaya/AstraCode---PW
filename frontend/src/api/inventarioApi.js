@@ -1,37 +1,28 @@
-import axiosConfig from './axiosConfig.js';
+import axiosInstance from './axiosConfig';
+import inventarioMock from './mocks/inventario.mock.json';
 
-export async function getMateriales(id) {
-  try {
-    const response = await axiosConfig.get(id ? `/inventario/materiales/${id}` : '/inventario/materiales');
-    return response.data;
-  } catch (error) {
-    throw error;
+const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+
+export async function getMateriales() {
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve(inventarioMock.data.materiales), 300));
   }
+  const response = await axiosInstance.get('/inventario/materiales');
+  return response.data.data;
 }
 
-export async function createMaterial(data) {
-  try {
-    const response = await axiosConfig.post('/inventario/materiales', data);
-    return response.data;
-  } catch (error) {
-    throw error;
+export async function getBodegasProyecto() {
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve(inventarioMock.data.bodegasProyecto), 300));
   }
+  const response = await axiosInstance.get('/inventario/bodegas-proyecto');
+  return response.data.data;
 }
 
-export async function updateMaterial(id, data) {
-  try {
-    const response = await axiosConfig.put(`/inventario/materiales/${id}`, data);
-    return response.data;
-  } catch (error) {
-    throw error;
+export async function crearTraslado(data) {
+  if (useMock) {
+    return new Promise((resolve) => setTimeout(() => resolve({ id: Date.now(), ...data }), 300));
   }
-}
-
-export async function deleteMaterial(id) {
-  try {
-    const response = await axiosConfig.delete(`/inventario/materiales/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await axiosInstance.post('/inventario/traslados', data);
+  return response.data.data;
 }

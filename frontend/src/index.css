@@ -1,7 +1,13 @@
-@import './styles/variables.css';
+* {
+  box-sizing: border-box;
+}
 
-body {
-  margin: 0;
-  min-width: 320px;
-  font-family: system-ui, sans-serif;
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
 }

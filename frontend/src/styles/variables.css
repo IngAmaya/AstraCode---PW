@@ -1,5 +1,33 @@
 :root {
-  --color-primary: #0d6efd;
-  --color-text: #212529;
-  --color-background: #ffffff;
+  --color-primary: #1B3A57;
+  --color-secondary: #2E7D4F;
+  --color-warning: #E8792D;
+  --color-bg: #F4F5F7;
+  --color-text: #2B2B2B;
+  --color-border: #D9DBDD;
+  --font-main: 'Inter', 'Roboto', sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+}
+
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.btn-success {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+.navbar-dark.bg-brand {
+  background-color: var(--color-primary) !important;
+}
+
+.text-brand {
+  color: var(--color-primary) !important;
 }
