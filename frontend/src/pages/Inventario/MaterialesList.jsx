@@ -1,28 +1,32 @@
-import axiosInstance from './axiosConfig';
-import inventarioMock from './mocks/inventario.mock.json';
+import React from 'react';
+import { Table, Spinner } from 'reactstrap';
+import { useFetch } from '../../hooks/useFetch';
+import { getMateriales } from '../../api/inventarioApi';
 
-const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+function MaterialesList() {
+  const { data: materiales, loading } = useFetch(getMateriales, []);
 
-export async function getMateriales() {
-  if (useMock) {
-    return new Promise((resolve) => setTimeout(() => resolve(inventarioMock.data.materiales), 300));
-  }
-  const response = await axiosInstance.get('/inventario/materiales');
-  return response.data.data;
+  if (loading) return <Spinner color="primary" />;
+
+  return (
+    <div>
+      <h3 className="text-brand mb-3">Materiales — Bodega Central</h3>
+      <Table hover responsive>
+        <thead>
+          <tr><th>Material</th><th>Unidad</th><th>Cantidad disponible</th></tr>
+        </thead>
+        <tbody>
+          {materiales && materiales.map((m) => (
+            <tr key={m.id}>
+              <td>{m.nombre}</td>
+              <td>{m.unidad}</td>
+              <td>{m.cantidadBodegaCentral}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
 }
 
-export async function getBodegasProyecto() {
-  if (useMock) {
-    return new Promise((resolve) => setTimeout(() => resolve(inventarioMock.data.bodegasProyecto), 300));
-  }
-  const response = await axiosInstance.get('/inventario/bodegas-proyecto');
-  return response.data.data;
-}
-
-export async function crearTraslado(data) {
-  if (useMock) {
-    return new Promise((resolve) => setTimeout(() => resolve({ id: Date.now(), ...data }), 300));
-  }
-  const response = await axiosInstance.post('/inventario/traslados', data);
-  return response.data.data;
-}
+export default MaterialesList;
