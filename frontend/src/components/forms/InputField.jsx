@@ -1,8 +1,11 @@
-export default function InputField({ label, id, ...props }) {
-  return (
-    <div className="mb-3">
-      {label && <label className="form-label" htmlFor={id}>{label}</label>}
-      <input className="form-control" id={id} {...props} />
-    </div>
-  );
+import React from 'react';
+import { FormGroup, Label, Input } from 'reactstrap';
+function InputField({ label, type = 'text', name, value, onChange, required = false }) {
+ return (
+ <FormGroup>
+ <Label>{label}</Label>
+ <Input type={type} name={name} value={value} onChange={onChange} required={required} />
+ </FormGroup>
+ );
 }
+export default InputField;
