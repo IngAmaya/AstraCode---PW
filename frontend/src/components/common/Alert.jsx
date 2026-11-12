@@ -1,5 +1,7 @@
-import { Alert as ReactstrapAlert } from 'reactstrap';
-
-export default function Alert({ color = 'info', children }) {
-  return <ReactstrapAlert color={color}>{children}</ReactstrapAlert>;
+import React from 'react';
+import { Alert as RsAlert } from 'reactstrap';
+function Alert({ color = 'info', children, isOpen = true, toggle }) {
+ if (!isOpen) return null;
+ return <RsAlert color={color} toggle={toggle}>{children}</RsAlert>;
 }
+export default Alert;

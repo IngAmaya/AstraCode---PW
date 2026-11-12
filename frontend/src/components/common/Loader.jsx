@@ -1,3 +1,10 @@
-export default function Loader() {
-  return <div className="spinner-border" role="status"><span className="visually-hidden">Cargando...</span></div>;
+import React from 'react';
+import { Spinner } from 'reactstrap';
+function Loader() {
+ return (
+ <div className="d-flex justify-content-center py-5">
+ <Spinner color="primary" />
+ </div>
+ );
 }
+export default Loader;
