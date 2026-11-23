@@ -2,7 +2,7 @@ const { Router } = require('express');
 const verificarToken = require('../../middlewares/auth.middleware');
 const permitirRoles = require('../../middlewares/role.middleware');
 const { ROLES } = require('../../utils/constants');
-const controller = require('./facturacion.controller');
+const controller = require('./facturacion_controller');
 
 const router = Router();
 const acceso = [verificarToken, permitirRoles(ROLES.ADMIN, ROLES.VENTAS)];

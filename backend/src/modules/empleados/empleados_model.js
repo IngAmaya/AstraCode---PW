@@ -1,6 +1,6 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const AppError = require('../../utils/AppError');
-const service = require('./empleados.service');
+const service = require('./empleados_service');
 
 const leerId = (valor) => {
   const id = Number(valor);

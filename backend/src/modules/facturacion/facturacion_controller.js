@@ -1,6 +1,6 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const AppError = require('../../utils/AppError');
-const service = require('./facturacion.service');
+const service = require('./facturacion_service');
 
 const leerId = (valor) => {
   const id = Number(valor);

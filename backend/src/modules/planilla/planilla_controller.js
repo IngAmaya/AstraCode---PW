@@ -1,6 +1,6 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const AppError = require('../../utils/AppError');
-const service = require('./planilla.service');
+const service = require('./planilla_service');
 
 const leerId = (valor) => {
   const id = Number(valor);
