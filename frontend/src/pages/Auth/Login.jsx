@@ -5,7 +5,7 @@ import { login } from '../../api/authApi';
 import { useAuth } from '../../hooks/useAuth';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [loginValue, setLoginValue] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function Login() {
     e.preventDefault();
     setError('');
     try {
-      const { user, token } = await login({ email, password });
+      const { user, token } = await login({ login: loginValue, password });
       loginContext(user, token);
       navigate('/');
     } catch (err) {
@@ -31,8 +31,8 @@ function Login() {
           {error && <Alert color="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label>Correo electrónico</Label>
-              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Label>Usuario o correo electrónico</Label>
+              <Input value={loginValue} onChange={(e) => setLoginValue(e.target.value)} required />
             </FormGroup>
             <FormGroup>
               <Label>Contraseña</Label>
