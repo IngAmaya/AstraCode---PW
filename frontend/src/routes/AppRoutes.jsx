@@ -30,37 +30,51 @@ import PlanPagos from '../pages/Ventas/PlanPagos.jsx';
 import AbonosForm from '../pages/Ventas/AbonosForm.jsx';
 import FacturacionCCF from '../pages/Ventas/FacturacionCCF.jsx';
 
+import ProtectedRoute from './ProtectedRoute.jsx';
+import { ROLES } from '../utils/constants.js';
+
 function AppRoutes() {
   return (
     <Routes>
+      {/* Pública */}
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/" element={<Dashboard />} />
 
-      <Route path="/proyectos" element={<ProyectosList />} />
-      <Route path="/proyectos/nuevo" element={<ProyectoForm />} />
-      <Route path="/proyectos/:id" element={<ProyectoDetalle />} />
-      <Route path="/proyectos/:id/permisos" element={<PermisosForm />} />
+      {/* Protegida: solo ADMIN puede crear usuarios */}
+      <Route
+        path="/admin/usuarios"
+        element={
+          <ProtectedRoute rolesPermitidos={[ROLES.ADMIN]}>
+            <Register />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/inventario/materiales" element={<MaterialesList />} />
-      <Route path="/inventario/bodega-central" element={<BodegaCentral />} />
-      <Route path="/inventario/bodegas-proyecto" element={<BodegasProyecto />} />
-      <Route path="/inventario/traslados" element={<TrasladosForm />} />
+      <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-      <Route path="/obra/avances" element={<AvancesList />} />
-      <Route path="/obra/avances/nuevo" element={<AvanceForm />} />
-      <Route path="/obra/partidas" element={<PartidasObra />} />
+      <Route path="/proyectos" element={<ProtectedRoute><ProyectosList /></ProtectedRoute>} />
+      <Route path="/proyectos/nuevo" element={<ProtectedRoute><ProyectoForm /></ProtectedRoute>} />
+      <Route path="/proyectos/:id" element={<ProtectedRoute><ProyectoDetalle /></ProtectedRoute>} />
+      <Route path="/proyectos/:id/permisos" element={<ProtectedRoute><PermisosForm /></ProtectedRoute>} />
 
-      <Route path="/rrhh/empleados" element={<EmpleadosList />} />
-      <Route path="/rrhh/planilla-administrativa" element={<PlanillaAdmin />} />
-      <Route path="/rrhh/planilla-campo" element={<PlanillaCampo />} />
-      <Route path="/rrhh/boleta/:id" element={<BoletaPago />} />
+      <Route path="/inventario/materiales" element={<ProtectedRoute><MaterialesList /></ProtectedRoute>} />
+      <Route path="/inventario/bodega-central" element={<ProtectedRoute><BodegaCentral /></ProtectedRoute>} />
+      <Route path="/inventario/bodegas-proyecto" element={<ProtectedRoute><BodegasProyecto /></ProtectedRoute>} />
+      <Route path="/inventario/traslados" element={<ProtectedRoute><TrasladosForm /></ProtectedRoute>} />
 
-      <Route path="/ventas/clientes" element={<ClientesList />} />
-      <Route path="/ventas/clientes/nuevo" element={<ClienteForm />} />
-      <Route path="/ventas/plan-pagos/:clienteId" element={<PlanPagos />} />
-      <Route path="/ventas/abonos/:clienteId" element={<AbonosForm />} />
-      <Route path="/ventas/facturacion" element={<FacturacionCCF />} />
+      <Route path="/obra/avances" element={<ProtectedRoute><AvancesList /></ProtectedRoute>} />
+      <Route path="/obra/avances/nuevo" element={<ProtectedRoute><AvanceForm /></ProtectedRoute>} />
+      <Route path="/obra/partidas" element={<ProtectedRoute><PartidasObra /></ProtectedRoute>} />
+
+      <Route path="/rrhh/empleados" element={<ProtectedRoute><EmpleadosList /></ProtectedRoute>} />
+      <Route path="/rrhh/planilla-administrativa" element={<ProtectedRoute><PlanillaAdmin /></ProtectedRoute>} />
+      <Route path="/rrhh/planilla-campo" element={<ProtectedRoute><PlanillaCampo /></ProtectedRoute>} />
+      <Route path="/rrhh/boleta/:id" element={<ProtectedRoute><BoletaPago /></ProtectedRoute>} />
+
+      <Route path="/ventas/clientes" element={<ProtectedRoute><ClientesList /></ProtectedRoute>} />
+      <Route path="/ventas/clientes/nuevo" element={<ProtectedRoute><ClienteForm /></ProtectedRoute>} />
+      <Route path="/ventas/plan-pagos/:clienteId" element={<ProtectedRoute><PlanPagos /></ProtectedRoute>} />
+      <Route path="/ventas/abonos/:clienteId" element={<ProtectedRoute><AbonosForm /></ProtectedRoute>} />
+      <Route path="/ventas/facturacion" element={<ProtectedRoute><FacturacionCCF /></ProtectedRoute>} />
     </Routes>
   );
 }
