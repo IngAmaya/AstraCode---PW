@@ -495,3 +495,21 @@ body {
   .app-layout > nav .nav-link.text-brand.active::before { display: none; }
   .app-layout > nav .nav-link.text-brand.active { box-shadow: inset 0 -3px 0 var(--accent); }
 }
+/* Panel azul continuo hasta el final de la página */
+@media (min-width: 901px) {
+  body:has(.app-layout > nav)::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 245px;
+    background: linear-gradient(180deg, #12304d 0%, #0f2740 100%);
+    z-index: 0;
+  }
+
+  body:has(.app-layout > nav) .app-layout + footer {
+    margin-left: 245px;
+  }
+}
+
