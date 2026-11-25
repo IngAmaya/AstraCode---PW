@@ -77,13 +77,27 @@ const actualizar = async (id, d) => {
   return rows[0] || null;
 };
 
-// Baja lógica: el empleado puede tener boletas y ventas asociadas, por eso no se borra
+// Baja lógica: el empleado puede tener boletas y ventas asociadas, por eso no se borra.
+// También desactiva la cuenta de usuario vinculada (si existe) para revocar su acceso.
 const desactivar = async (id) => {
-  const { rows } = await pool.query(
-    `UPDATE empleados SET activo = FALSE WHERE id = $1 RETURNING ${COLUMNAS}`,
-    [id]
-  );
-  return rows[0] || null;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows } = await client.query(
+      `UPDATE empleados SET activo = FALSE WHERE id = $1 RETURNING ${COLUMNAS}`,
+      [id]
+    );
+    if (rows[0]) {
+      await client.query(`UPDATE usuarios SET activo = FALSE WHERE empleado_id = $1`, [id]);
+    }
+    await client.query('COMMIT');
+    return rows[0] || null;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 module.exports = { listar, obtenerPorId, siguienteCodigo, crear, actualizar, desactivar };

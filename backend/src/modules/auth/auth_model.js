@@ -3,9 +3,11 @@ const pool = require('../../config/db');
 // Busca por username o correo, sin distinguir mayúsculas
 const buscarPorLogin = async (login) => {
   const { rows } = await pool.query(
-    `SELECT u.id, u.nombre_completo, u.username, u.correo, u.password_hash, u.activo, r.nombre AS rol
+    `SELECT u.id, u.nombre_completo, u.username, u.correo, u.password_hash,
+            (u.activo AND (e.id IS NULL OR e.activo)) AS activo, r.nombre AS rol
      FROM usuarios u
      JOIN roles r ON r.id = u.rol_id
+     LEFT JOIN empleados e ON e.id = u.empleado_id
      WHERE LOWER(u.username) = LOWER($1) OR LOWER(u.correo) = LOWER($1)`,
     [login]
   );
@@ -15,9 +17,11 @@ const buscarPorLogin = async (login) => {
 // Estado ACTUAL del usuario en la BD (el token solo prueba quién era cuando inició sesión)
 const buscarSesion = async (id) => {
   const { rows } = await pool.query(
-    `SELECT u.id, u.username, u.activo, u.empleado_id, r.nombre AS rol
+    `SELECT u.id, u.username, (u.activo AND (e.id IS NULL OR e.activo)) AS activo,
+            u.empleado_id, r.nombre AS rol
      FROM usuarios u
      JOIN roles r ON r.id = u.rol_id
+     LEFT JOIN empleados e ON e.id = u.empleado_id
      WHERE u.id = $1`,
     [id]
   );
