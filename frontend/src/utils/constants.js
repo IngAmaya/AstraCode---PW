@@ -1,19 +1,22 @@
-export const ESTADOS_PROYECTO = ['Diseño', 'Terracería', 'Obra Gris', 'Acabados', 'Finalizado'];
-
-export const PERMISOS_REQUERIDOS = ['OPAMSS', 'MARN', 'ANDA'];
-
-export const TIPOS_PLANILLA = {
-  ADMINISTRATIVA: 'administrativa',
-  CAMPO: 'campo',
+export const ROLES = {
+  ADMIN: 'ADMIN',
+  GERENTE: 'GERENTE_PROYECTO',
+  INGENIERO: 'INGENIERO_RESIDENTE',
+  BODEGUERO: 'BODEGUERO',
+  VENTAS: 'VENTAS',
+  RRHH: 'RRHH',
 };
 
-export const PORCENTAJES_RRHH = {
+export const TIPOS_PROYECTO = ['CASAS_SERIE', 'APARTAMENTOS'];
+export const FASES_PROYECTO = ['DISENO', 'TERRACERIA', 'OBRA_GRIS', 'ACABADOS', 'FINALIZADO'];
+export const ESTADOS_PROYECTO = ['PLANIFICACION', 'EN_EJECUCION', 'SUSPENDIDO', 'FINALIZADO'];
+export const ENTIDADES_PERMISO = ['OPAMSS', 'MARN', 'ANDA'];
+export const ESTADOS_PERMISO = ['PENDIENTE', 'EN_REVISION', 'APROBADO', 'RECHAZADO'];
+
+export const TIPOS_BODEGA = ['CENTRAL', 'PROYECTO'];
+
+export const PORCENTAJES = {
+  IVA: 0.13,
   ISSS: 0.03,
   AFP: 0.0725,
-};
-
-export const ROLES = {
-  ADMIN: 'admin',
-  RESIDENTE: 'ingeniero_residente',
-  VENTAS: 'ventas',
 };
