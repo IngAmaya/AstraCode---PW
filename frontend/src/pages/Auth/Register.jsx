@@ -25,7 +25,7 @@ function Register() {
       setSuccess(true);
       setFormData({ nombre_completo: '', username: '', correo: '', password: '', rol: ROLES.ADMIN, empleado_id: '' });
     } catch (err) {
-      setError('No se pudo crear el usuario. Verifica los datos.');
+      setError(err.response?.data?.message || 'No se pudo crear el usuario. Verifica los datos.');
     }
   }
 
