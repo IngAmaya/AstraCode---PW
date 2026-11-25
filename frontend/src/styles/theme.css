@@ -1,0 +1,491 @@
+/* ============================================================
+   Tema visual · ERP Inmobiliaria y Constructora SV
+   Se importa DESPUÉS de index.css, así que solo sobrescribe estilos.
+   Para volver al diseño anterior: borrar este archivo y su import.
+   ============================================================ */
+
+:root {
+  --ink: #0f2740;
+  --ink-2: #16395a;
+  --ink-soft: #35516b;
+  --accent: #d99a2b;
+  --teal: #237a97;
+  --green: #2f8a5f;
+  --bg: #e8edf3;
+  --card: #ffffff;
+  --line: #d9e1ea;
+  --muted: #5d7083;
+  --shadow-sm: 0 1px 2px rgba(15, 39, 64, .07);
+  --shadow-md: 0 2px 4px rgba(15, 39, 64, .05), 0 10px 28px rgba(15, 39, 64, .08);
+
+  /* variables que ya usaba el proyecto */
+  --color-primary: #14385a;
+  --color-border: #d9e1ea;
+}
+
+body {
+  background: linear-gradient(180deg, #eaeff5 0%, #e3e9f0 100%) fixed;
+  color: #1d2b3a;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #cfe4f1; }
+* { scrollbar-width: thin; scrollbar-color: #b4c3d2 transparent; }
+
+/* ---------- Barra superior ---------- */
+.navbar.navbar-dark.bg-brand {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--ink-2) 100%) !important;
+  box-shadow: inset 0 -3px 0 var(--accent), 0 2px 14px rgba(15, 39, 64, .28);
+  position: relative;
+  z-index: 5;
+}
+
+.navbar-brand {
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.navbar-brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 3px rgba(217, 154, 43, .25);
+}
+
+.navbar .nav-item {
+  background: rgba(255, 255, 255, .10);
+  border: 1px solid rgba(255, 255, 255, .14);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navbar .btn-light {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .38);
+  font-weight: 600;
+}
+
+.navbar .btn-light:hover {
+  background: rgba(255, 255, 255, .14);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .6);
+}
+
+/* ---------- Menú lateral ---------- */
+.app-layout > nav {
+  background: linear-gradient(180deg, #12304d 0%, #0f2740 100%) !important;
+  border-right: 1px solid rgba(255, 255, 255, .06) !important;
+  scrollbar-color: rgba(255, 255, 255, .25) transparent;
+}
+
+@media (min-width: 901px) {
+  .app-layout > nav {
+    width: 245px !important;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+}
+
+.app-layout > nav .nav-link.text-brand {
+  color: #b9c9d9 !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 14px 10px 16px;
+  position: relative;
+  transition: background .15s, color .15s;
+}
+
+.app-layout > nav .nav-link.text-brand:hover {
+  background: rgba(255, 255, 255, .07);
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.app-layout > nav .nav-link.text-brand.active {
+  background: rgba(255, 255, 255, .12);
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.app-layout > nav .nav-link.text-brand.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  bottom: 9px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* ---------- Encabezados de pantalla ---------- */
+.screen-heading h1 { color: var(--ink); }
+
+.screen-heading h1::after {
+  content: "";
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.screen-heading p { color: var(--muted); }
+
+/* ---------- Paneles y tarjetas ---------- */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  padding: 22px 24px;
+}
+
+.panel-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+}
+
+.panel-heading h2::before {
+  content: "";
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(var(--accent), #c0831c);
+}
+
+.stat-card {
+  --c: var(--teal);
+  --ct: #1f6f8b;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 20px 18px;
+  box-shadow: var(--shadow-sm), inset 0 3px 0 var(--c);
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+
+.stat-card:nth-child(3n+2) { --c: var(--accent); --ct: #9a6410; }
+.stat-card:nth-child(3n+3) { --c: var(--green); --ct: #2c7a58; }
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md), inset 0 3px 0 var(--c);
+  border-color: var(--line);
+  text-decoration: none;
+}
+
+.stat-card strong { color: var(--ink); font-size: 30px; }
+.stat-card small { color: var(--ct); font-weight: 700; }
+
+.small-stats > div {
+  background: #f3f6fa;
+  border: 1px solid var(--line);
+}
+
+.quick-links a {
+  background: #f0f4f9;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: background .15s, color .15s, transform .15s;
+}
+
+.quick-links a:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.detail-grid > div {
+  background: #f3f6fa;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.payment-total {
+  background: linear-gradient(90deg, #e6f1f7, #f0f6fa);
+  border: 1px solid #cfe2ee;
+  border-radius: 10px;
+}
+
+/* ---------- Tablas ---------- */
+.table-wrap {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.data-table,
+.table {
+  font-size: 13.5px;
+}
+
+.data-table thead th,
+.table thead th {
+  background: #eaf0f6;
+  color: #3b536a;
+  font-size: 11px;
+  letter-spacing: .7px;
+  border-bottom: 2px solid #d3dde8;
+}
+
+.data-table tbody tr:nth-child(even) { background: #f8fafc; }
+.data-table tbody tr:hover { background: #eef5fb; }
+
+.table {
+  --bs-table-striped-bg: #f6f9fc;
+  --bs-table-hover-bg: #eef5fb;
+}
+
+/* ---------- Formularios ---------- */
+.field,
+.form-label {
+  color: var(--ink-soft);
+}
+
+.field input,
+.field select,
+.field textarea,
+.status-select,
+.table-input,
+.form-control,
+.form-select {
+  border: 1px solid #cbd6e2;
+  border-radius: 10px;
+  background-color: #fbfcfe;
+  transition: border-color .15s, box-shadow .15s, background-color .15s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.status-select:focus,
+.table-input:focus,
+.form-control:focus,
+.form-select:focus {
+  outline: 0;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(35, 122, 151, .15);
+  background-color: #fff;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  border-radius: 10px;
+  letter-spacing: .1px;
+  transition: filter .15s, transform .15s, background-color .15s, color .15s;
+}
+
+.btn.btn-primary {
+  background: linear-gradient(180deg, #256f94, #1b5877) !important;
+  border-color: #1b5877 !important;
+  box-shadow: 0 1px 2px rgba(15, 39, 64, .25), inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+
+.btn.btn-success {
+  background: linear-gradient(180deg, #2f8a5f, #236c49) !important;
+  border-color: #236c49 !important;
+  box-shadow: 0 1px 2px rgba(15, 39, 64, .22), inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+
+.btn.btn-primary:hover,
+.btn.btn-success:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #1b5877;
+  --bs-btn-border-color: #9fbdd0;
+  --bs-btn-hover-bg: #1b5877;
+  --bs-btn-hover-border-color: #1b5877;
+  --bs-btn-active-bg: #164a66;
+  --bs-btn-active-border-color: #164a66;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: #475467;
+  --bs-btn-border-color: #c3cdd8;
+  --bs-btn-hover-bg: #475467;
+  --bs-btn-hover-border-color: #475467;
+}
+
+/* ---------- Etiquetas de estado (suaves, no saturadas) ---------- */
+.badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  padding: .42em .8em;
+  border-radius: 999px;
+}
+
+.badge.bg-success, .badge.text-bg-success { background-color: #ddf3e6 !important; color: #17623d !important; }
+.badge.bg-danger,  .badge.text-bg-danger  { background-color: #fde6e3 !important; color: #a52c24 !important; }
+.badge.bg-warning, .badge.text-bg-warning { background-color: #fbefd2 !important; color: #8a5a00 !important; }
+.badge.bg-secondary, .badge.text-bg-secondary { background-color: #e6ebf1 !important; color: #475467 !important; }
+.badge.bg-info,    .badge.text-bg-info    { background-color: #dcecf7 !important; color: #1d5c83 !important; }
+
+/* ---------- Avisos ---------- */
+.alert,
+.notice {
+  border: 0;
+  border-left: 4px solid;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.alert-danger,
+.notice.error { background: #fdecea; color: #8f2118; border-left-color: #d64535; }
+.alert-success { background: #e6f5ec; color: #17623d; border-left-color: #2f8a5f; }
+
+/* ---------- Login y otros elementos ---------- */
+.card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--ink), var(--teal), var(--accent));
+}
+
+.spinner-border { color: var(--teal); }
+
+.app-layout + footer {
+  color: var(--muted);
+  border-top: 1px solid var(--line) !important;
+}
+/* ============================================================
+   EXTRA · detalles de acabado (pegar al final de theme.css)
+   ============================================================ */
+
+/* Fondo tipo plano de obra: cuadrícula muy tenue sobre el degradado */
+body {
+  background:
+    linear-gradient(rgba(15, 39, 64, .035) 1px, transparent 1px) 0 0 / 34px 34px,
+    linear-gradient(90deg, rgba(15, 39, 64, .035) 1px, transparent 1px) 0 0 / 34px 34px,
+    linear-gradient(180deg, #eaeff5 0%, #e3e9f0 100%);
+  background-attachment: fixed;
+}
+
+/* Entrada suave de cada pantalla */
+@keyframes subir-suave {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.screen { animation: subir-suave .35s ease both; }
+
+/* Números alineados en tablas y tarjetas */
+.data-table td,
+.table td,
+.stat-card strong,
+.payment-total strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Primera columna de las tablas un poco más marcada */
+.data-table tbody td:first-child { font-weight: 600; color: var(--ink); }
+
+/* Icono dentro de cada tarjeta del panel de control */
+.stat-card { --cbg: rgba(35, 122, 151, .12); padding-right: 76px; }
+.stat-card:nth-child(3n+2) { --cbg: rgba(217, 154, 43, .17); }
+.stat-card:nth-child(3n+3) { --cbg: rgba(47, 138, 95, .13); }
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--cbg);
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  background-color: var(--ct);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 22px;
+  mask-size: 22px;
+}
+/* proyectos */
+.stat-card:nth-child(1)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M3%2021h18M5%2021V7l8-4v18M19%2021V11l-6-4M9%209v.01M9%2012v.01M9%2015v.01M9%2018v.01'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M3%2021h18M5%2021V7l8-4v18M19%2021V11l-6-4M9%209v.01M9%2012v.01M9%2015v.01M9%2018v.01'/%3E%3C/svg%3E");
+}
+/* materiales */
+.stat-card:nth-child(2)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M16.5%209.4%207.5%204.21M21%208a2%202%200%200%200-1-1.73l-7-4a2%202%200%200%200-2%200l-7%204A2%202%200%200%200%203%208v8a2%202%200%200%200%201%201.73l7%204a2%202%200%200%200%202%200l7-4A2%202%200%200%200%2021%2016Z'/%3E%3Cpath%20d='m3.3%207%208.7%205%208.7-5M12%2022V12'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M16.5%209.4%207.5%204.21M21%208a2%202%200%200%200-1-1.73l-7-4a2%202%200%200%200-2%200l-7%204A2%202%200%200%200%203%208v8a2%202%200%200%200%201%201.73l7%204a2%202%200%200%200%202%200l7-4A2%202%200%200%200%2021%2016Z'/%3E%3Cpath%20d='m3.3%207%208.7%205%208.7-5M12%2022V12'/%3E%3C/svg%3E");
+}
+/* avances */
+.stat-card:nth-child(3)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m22%207-8.5%208.5-5-5L2%2017'/%3E%3Cpath%20d='M16%207h6v6'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m22%207-8.5%208.5-5-5L2%2017'/%3E%3Cpath%20d='M16%207h6v6'/%3E%3C/svg%3E");
+}
+/* empleados */
+.stat-card:nth-child(4)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M16%2021v-2a4%204%200%200%200-4-4H6a4%204%200%200%200-4%204v2'/%3E%3Ccircle%20cx='9'%20cy='7'%20r='4'/%3E%3Cpath%20d='M22%2021v-2a4%204%200%200%200-3-3.87M16%203.13a4%204%200%200%201%200%207.75'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M16%2021v-2a4%204%200%200%200-4-4H6a4%204%200%200%200-4%204v2'/%3E%3Ccircle%20cx='9'%20cy='7'%20r='4'/%3E%3Cpath%20d='M22%2021v-2a4%204%200%200%200-3-3.87M16%203.13a4%204%200%200%201%200%207.75'/%3E%3C/svg%3E");
+}
+/* clientes */
+.stat-card:nth-child(5)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021v-2a4%204%200%200%200-4-4H9a4%204%200%200%200-4%204v2'/%3E%3Ccircle%20cx='12'%20cy='7'%20r='4'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M19%2021v-2a4%204%200%200%200-4-4H9a4%204%200%200%200-4%204v2'/%3E%3Ccircle%20cx='12'%20cy='7'%20r='4'/%3E%3C/svg%3E");
+}
+/* documentos */
+.stat-card:nth-child(6)::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M14.5%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V7.5Z'/%3E%3Cpath%20d='M14%202v6h6M8%2013h8M8%2017h8M8%209h2'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M14.5%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V7.5Z'/%3E%3Cpath%20d='M14%202v6h6M8%2013h8M8%2017h8M8%209h2'/%3E%3C/svg%3E");
+}
+
+/* Títulos de sección en el menú lateral (solo CSS, no cambia el código) */
+.app-layout > nav .nav-item::before {
+  display: block;
+  padding: 16px 16px 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  color: rgba(255, 255, 255, .36);
+}
+.app-layout > nav .nav-item:nth-child(1)::before  { content: "PRINCIPAL"; padding-top: 4px; }
+.app-layout > nav .nav-item:nth-child(2)::before  { content: "PLANIFICACIÓN"; }
+.app-layout > nav .nav-item:nth-child(3)::before  { content: "INVENTARIO"; }
+.app-layout > nav .nav-item:nth-child(7)::before  { content: "OBRA"; }
+.app-layout > nav .nav-item:nth-child(9)::before  { content: "RECURSOS HUMANOS"; }
+.app-layout > nav .nav-item:nth-child(12)::before { content: "VENTAS"; }
+.app-layout > nav .nav-item:nth-child(14)::before { content: "ADMINISTRACIÓN"; }
+.app-layout > nav .nav-item:not(:nth-child(1)):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(7)):not(:nth-child(9)):not(:nth-child(12)):not(:nth-child(14))::before {
+  content: none;
+}
+
