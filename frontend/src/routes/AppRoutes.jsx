@@ -30,7 +30,7 @@ import PlanPagos from '../pages/Ventas/PlanPagos.jsx';
 import AbonosForm from '../pages/Ventas/AbonosForm.jsx';
 import FacturacionCCF from '../pages/Ventas/FacturacionCCF.jsx';
 
-import ProtectedRoute from './ProtectedRoute.jsx';
+import ProtectedRoute from './ProtectedRoutes.jsx';
 import { ROLES } from '../utils/constants.js';
 
 function AppRoutes() {
