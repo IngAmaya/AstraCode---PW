@@ -1,3 +1,9 @@
-export default function Dashboard() {
-  return <section><h1>Dashboard</h1></section>;
-}
+import React,{useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {getProyectos} from '../../api/proyectosApi';
+import {getMateriales} from '../../api/inventarioApi';
+import {getAvances} from '../../api/obraApi';
+import {getEmpleados} from '../../api/rrhhApi';
+import {getClientes,getFacturas} from '../../api/ventasApi';
+import {Screen,Panel,Notice,Loading,Table,money} from '../../components/ui/Screen';
+export default function Dashboard(){const [s,setS]=useState({});const [busy,setBusy]=useState(true);const [error,setError]=useState(null);useEffect(()=>{Promise.allSettled([getProyectos(),getMateriales(),getAvances(),getEmpleados(),getClientes(),getFacturas()]).then(results=>{const keys=['proyectos','materiales','avances','empleados','clientes','facturas'];const next={};results.forEach((r,i)=>{if(r.status==='fulfilled')next[keys[i]]=Array.isArray(r.value)?r.value:[]});setS(next);const failed=results.find(r=>r.status==='rejected');if(failed)setError(failed.reason)}).finally(()=>setBusy(false))},[]);const cards=[['Proyectos',s.proyectos?.length??'—','/proyectos'],['Materiales',s.materiales?.length??'—','/inventario/materiales'],['Avances registrados',s.avances?.length??'—','/obra/avances'],['Empleados',s.empleados?.length??'—','/rrhh/empleados'],['Clientes',s.clientes?.length??'—','/ventas/clientes'],['Documentos fiscales',s.facturas?.length??'—','/ventas/facturacion']];return <Screen title="Panel de control" subtitle="Resumen general de la operación de la constructora."><Notice error={error}/><Loading busy={busy}/><div className="stats-grid">{cards.map(([t,v,url])=><Link className="stat-card" to={url} key={t}><span>{t}</span><strong>{v}</strong><small>Ver módulo →</small></Link>)}</div><Panel title="Accesos rápidos"><div className="quick-links"><Link to="/obra/avances/nuevo">Registrar avance</Link><Link to="/ventas/clientes/nuevo">Crear cliente</Link><Link to="/rrhh/planilla-administrativa">Generar planilla</Link><Link to="/inventario/traslados">Registrar traslado</Link></div></Panel></Screen>}
