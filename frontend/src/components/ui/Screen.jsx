@@ -1,49 +1,10 @@
 import React from 'react';
-import { Nav, NavItem, NavLink } from 'reactstrap';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { ROLES } from '../../utils/constants';
-
-const menuItems = [
-  { label: 'Dashboard', path: '/' },
-  { label: 'Proyectos', path: '/proyectos' },
-  { label: 'Materiales', path: '/inventario/materiales' },
-  { label: 'Bodega central', path: '/inventario/bodega-central' },
-  { label: 'Bodegas de proyecto', path: '/inventario/bodegas-proyecto' },
-  { label: 'Traslados', path: '/inventario/traslados' },
-  { label: 'Partidas de obra', path: '/obra/partidas' },
-  { label: 'Avances de obra', path: '/obra/avances' },
-  { label: 'Empleados', path: '/rrhh/empleados' },
-  { label: 'Planilla administrativa', path: '/rrhh/planilla-administrativa' },
-  { label: 'Planilla de campo', path: '/rrhh/planilla-campo' },
-  { label: 'Clientes', path: '/ventas/clientes' },
-  { label: 'Facturación', path: '/ventas/facturacion' },
-];
-
-function Sidebar() {
-  const { user } = useAuth();
-  const location = useLocation();
-
-  return (
-    <nav style={{ width: '220px', background: '#fff', borderRight: '1px solid var(--color-border)' }}>
-      <Nav vertical className="p-3">
-        {menuItems.map((item) => (
-          <NavItem key={item.path}>
-            <NavLink tag={Link} to={item.path} className={`text-brand ${location.pathname === '/admin/usuarios' ? 'active' : ''}`}>
-              {item.label}
-            </NavLink>
-          </NavItem>
-        ))}
-        {user && user.rol === ROLES.ADMIN && (
-          <NavItem>
-            <NavLink tag={Link} to="/admin/usuarios" className={`text-brand ${location.pathname === '/admin/usuarios' ? 'active' : ''}`}>
-              Gestión de Usuarios
-            </NavLink>
-          </NavItem>
-        )}
-      </Nav>
-    </nav>
-  );
-}
-
-export default Sidebar;
+export function Screen({title,subtitle,actions,children}) { return <section className="screen"><div className="screen-heading"><div><h1>{title}</h1>{subtitle&&<p>{subtitle}</p>}</div><div className="screen-actions">{actions}</div></div>{children}</section>; }
+export function Panel({title,children,actions}) { return <div className="panel"><div className="panel-heading">{title&&<h2>{title}</h2>}{actions}</div>{children}</div>; }
+export function Notice({error}) { return error ? <div className="notice error">{error.response?.data?.message || error.message || 'Ocurrió un error al consultar la información.'}</div> : null; }
+export function Loading({busy}) { return busy ? <div className="loading">Cargando información…</div> : null; }
+export function Empty({children='No hay registros para mostrar.'}) { return <div className="empty">{children}</div>; }
+export function Field({label,children,...props}) { return <label className="field"><span>{label}</span>{children || <input {...props}/>}</label>; }
+export function Table({columns,rows,onRow}) { return <div className="table-wrap"><table className="data-table"><thead><tr>{columns.map(c=><th key={c.key}>{c.label}</th>)}</tr></thead><tbody>{rows.map((r,i)=><tr key={r.id??i} onClick={()=>onRow?.(r)}>{columns.map(c=><td key={c.key}>{c.render?c.render(r):r[c.key]??'—'}</td>)}</tr>)}</tbody></table>{!rows.length&&<Empty/>}</div>; }
+export const money = (v) => Number(v||0).toLocaleString('es-SV',{style:'currency',currency:'USD'});
+export const date = (v) => v ? new Date(v).toLocaleDateString('es-SV',{timeZone:'UTC'}) : '—';

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Nav, NavItem, NavLink } from 'reactstrap';
 import { Link, useLocation } from 'react-router-dom';
@@ -25,18 +26,35 @@ function Sidebar() {
   const location = useLocation();
 
   return (
-    <nav style={{ width: '220px', background: '#fff', borderRight: '1px solid var(--color-border)' }}>
+    <nav style={{
+      width: '220px',
+      background: '#fff',
+      borderRight: '1px solid var(--color-border)'
+    }}>
       <Nav vertical className="p-3">
         {menuItems.map((item) => (
           <NavItem key={item.path}>
-            <NavLink tag={Link} to={item.path} className={`text-brand ${location.pathname === '/admin/usuarios' ? 'active' : ''}`}>
+            <NavLink
+              tag={Link}
+              to={item.path}
+              className={`text-brand ${
+                location.pathname === item.path ? 'active' : ''
+              }`}
+            >
               {item.label}
             </NavLink>
           </NavItem>
         ))}
+
         {user && user.rol === ROLES.ADMIN && (
           <NavItem>
-            <NavLink tag={Link} to="/admin/usuarios" className={`text-brand ${location.pathname === '/admin/usuarios' ? 'active' : ''}`}>
+            <NavLink
+              tag={Link}
+              to="/admin/usuarios"
+              className={`text-brand ${
+                location.pathname === '/admin/usuarios' ? 'active' : ''
+              }`}
+            >
               Gestión de Usuarios
             </NavLink>
           </NavItem>
