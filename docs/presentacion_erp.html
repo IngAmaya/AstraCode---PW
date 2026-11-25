@@ -1,0 +1,1403 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP de Gestión Integral — Inmobiliaria y Constructora SV</title>
+  <style>
+    :root {
+      --primary: #1B3A57;
+      --primary-dark: #102538;
+      --primary-light: #28527A;
+      --secondary: #2E7D4F;
+      --secondary-light: #E8F5EE;
+      --warning: #E8792D;
+      --warning-light: #FDF1E8;
+      --bg: #F4F5F7;
+      --surface: #FFFFFF;
+      --text: #1F2933;
+      --text-muted: #52606D;
+      --border: #D9DBDD;
+      --danger: #C62828;
+      --danger-light: #FDECEA;
+      --font: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: var(--font);
+      background: #0D1B2A;
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* App Shell */
+    .deck-shell {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .stage-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 24px 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 16:9 Slide Container */
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 16 / 9;
+      max-height: 100%;
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+      position: relative;
+      flex-direction: column;
+      animation: fadeSlide 0.28s ease-out;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(8px) scale(0.992); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Cover & Dark Slides */
+    .slide--dark {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 62%, #1E4B45 100%);
+      color: #FFFFFF;
+    }
+
+    .slide--dark .slide-footer {
+      border-top-color: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      padding: 26px 44px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      background: #FAFBFC;
+    }
+
+    .slide-kicker {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--warning);
+      margin-bottom: 4px;
+    }
+
+    .slide-title {
+      font-size: 27px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.15;
+    }
+
+    .slide-tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #E6EEF5;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    /* Slide Body */
+    .slide-body {
+      flex: 1;
+      padding: 24px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    /* Slide Footer */
+    .slide-footer {
+      padding: 10px 44px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      background: rgba(244, 245, 247, 0.5);
+    }
+
+    .slide--dark .slide-footer {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    /* Grid & Cards */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .grid-asym { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; }
+
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card--white {
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(16, 37, 56, 0.05);
+    }
+
+    .card--primary { border-top: 4px solid var(--primary); }
+    .card--secondary { border-top: 4px solid var(--secondary); }
+    .card--warning { border-top: 4px solid var(--warning); }
+    .card--danger { border-top: 4px solid var(--danger); }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      line-height: 1.48;
+      color: var(--text);
+    }
+
+    /* Lists */
+    ul.clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    ul.clean-list li {
+      font-size: 13.2px;
+      line-height: 1.42;
+      padding-left: 18px;
+      position: relative;
+      color: var(--text);
+    }
+
+    ul.clean-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--secondary);
+    }
+
+    ul.clean-list.warn li::before { background: var(--warning); }
+    ul.clean-list.navy li::before { background: var(--primary); }
+
+    /* Badges & Code */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-primary { background: #E3ECF5; color: var(--primary); }
+    .badge-secondary { background: var(--secondary-light); color: var(--secondary); }
+    .badge-warning { background: var(--warning-light); color: #B85414; }
+    .badge-danger { background: var(--danger-light); color: var(--danger); }
+
+    code {
+      font-family: var(--mono);
+      font-size: 11.8px;
+      background: #EAECEF;
+      color: var(--primary-dark);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    /* KPI / Stat Blocks */
+    .stat-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .stat-num {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    /* Callout Banner */
+    .callout {
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .callout-success { background: var(--secondary-light); border-left: 4px solid var(--secondary); color: #1B4D30; }
+    .callout-warn { background: var(--warning-light); border-left: 4px solid var(--warning); color: #7C370B; }
+    .callout-navy { background: #E7EFF7; border-left: 4px solid var(--primary); color: var(--primary-dark); }
+
+    /* Table */
+    table.mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      background: #FFF;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    table.mini-table th {
+      background: var(--primary);
+      color: #FFF;
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    table.mini-table td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    table.mini-table tr:last-child td { border-bottom: none; }
+    table.mini-table tr:nth-child(even) td { background: #F9FAFB; }
+
+    /* Team Grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .member-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 10px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .member-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .member-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      line-height: 1.25;
+    }
+
+    .member-id {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    /* Funnel / Flow */
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .flow-step.won {
+      background: var(--secondary-light);
+      border-color: var(--secondary);
+      color: var(--secondary);
+    }
+
+    .flow-arrow {
+      color: var(--warning);
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    /* Bottom Control Bar */
+    .controls-bar {
+      height: 54px;
+      background: #102030;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: #E2E8F0;
+      font-size: 13px;
+      z-index: 20;
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-ctrl {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      padding: 6px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: var(--font);
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-ctrl:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-ctrl.active {
+      background: var(--warning);
+      border-color: var(--warning);
+      color: #FFF;
+    }
+
+    .progress-track {
+      width: 200px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--warning);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    /* Speaker Notes Drawer */
+    .notes-drawer {
+      display: none;
+      background: #162B40;
+      color: #F1F5F9;
+      border-top: 2px solid var(--warning);
+      padding: 14px 28px;
+      max-height: 190px;
+      overflow-y: auto;
+    }
+
+    .notes-drawer.open {
+      display: block;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #FBBF24;
+      font-weight: 700;
+    }
+
+    .notes-content {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #E2E8F0;
+    }
+
+    /* Overview Grid Modal */
+    .overview-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 32, 0.92);
+      z-index: 50;
+      padding: 36px;
+      overflow-y: auto;
+    }
+
+    .overview-modal.open {
+      display: block;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: 20px auto 0;
+    }
+
+    .overview-item {
+      background: #1B3A57;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 14px;
+      color: #FFF;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .overview-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--warning);
+    }
+
+    .overview-item.current {
+      border: 2px solid var(--warning);
+      background: #23496D;
+    }
+
+    /* Print / PDF Export */
+    @media print {
+      @page { size: landscape; margin: 0; }
+      html, body { height: auto; overflow: visible; background: #FFF; }
+      .controls-bar, .notes-drawer, .overview-modal { display: none !important; }
+      .stage-wrapper { display: block; padding: 0; }
+      .slide {
+        display: flex !important;
+        box-shadow: none;
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        page-break-after: always;
+        break-after: page;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck-shell">
+    <div class="stage-wrapper">
+
+      <!-- SLIDE 1: PORTADA -->
+      <section class="slide slide--dark active" data-title="Portada — ERP Inmobiliaria y Constructora SV"
+        data-notes="Apertura (30 seg): Buenos días/tardes. Hoy presentamos nuestro ERP de Gestión Integral diseñado específicamente para 'Inmobiliaria y Constructora SV'. No es un sistema genérico: resuelve de raíz el problema de operar proyectos de construcción simultáneos junto con la comercialización inmobiliaria, blindando permisos, inventarios, planillas y ventas bajo una sola plataforma web.">
+        <div class="slide-body" style="padding: 48px 58px; justify-content: space-between;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="badge" style="background: rgba(232, 121, 45, 0.22); color: #FDBA74; border: 1px solid rgba(232,121,45,0.45); font-size:12px; padding:6px 14px;">
+              PROYECTO DE CÁTEDRA · PROGRAMACIÓN WEB (CICLO 02, 2026)
+            </span>
+            <span style="font-size:13px; color: rgba(255,255,255,0.75); font-weight:600;">
+              Universidad Centroamericana José Simeón Cañas (UCA)
+            </span>
+          </div>
+
+          <div style="max-width: 880px;">
+            <div style="font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #6EE7B7; text-transform: uppercase; margin-bottom: 12px;">
+              Sistema Web de Gestión
+            </div>
+            <h1 style="font-size: 46px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; letter-spacing: -0.5px;">
+              ERP de Gestión Integral para<br/>“Inmobiliaria y Constructora SV”
+            </h1>
+            <p style="font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.86); max-width: 760px;">
+              Administra en un solo lugar desde los permisos y las bodegas de materiales hasta el avance de cada obra, las planillas de pago y las ventas de viviendas.
+            </p>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding-top: 12px;">
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:22px; font-weight:800; color:#6EE7B7;">5 Módulos</div>
+              <div style="font-size:12px; color:rgba(255,255,255,0.78);">Conectados en un solo sistema</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:22px; font-weight:800; color:#FDBA74;">26 Tablas</div>
+              <div style="font-size:12px; color:rgba(255,255,255,0.78);">PostgreSQL 16 + 12 Triggers</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:22px; font-weight:800; color:#93C5FD;">6 Roles RBAC</div>
+              <div style="font-size:12px; color:rgba(255,255,255,0.78);">JWT Stateless + bcryptjs</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius:10px; padding:12px 16px;">
+              <div style="font-size:22px; font-weight:800; color:#FFF;">100% Docker</div>
+              <div style="font-size:12px; color:rgba(255,255,255,0.78);">Listo para instalar en cualquier equipo</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Departamento de Electrónica e Informática · Antiguo Cuscatlán, El Salvador</span>
+          <span>Diapositiva 1 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: INTEGRANTES -->
+      <section class="slide" data-title="Equipo Desarrollador"
+        data-notes="Presentación del equipo (20 seg): Este sistema fue diseñado e implementado por nuestro equipo de 7 integrantes del Departamento de Electrónica e Informática de la UCA, trabajando de forma paralela mediante contratos de API y control de versiones en GitHub.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Equipo de Ingeniería</div>
+            <h2 class="slide-title">Integrantes del Proyecto</h2>
+          </div>
+          <span class="slide-tag">UCA · Programación Web 02/2026</span>
+        </div>
+        <div class="slide-body">
+          <div class="team-grid">
+            <div class="member-card">
+              <div class="member-avatar">PA</div>
+              <div class="member-name">Pablo Andrés Amaya Tenorio</div>
+              <div class="member-id">00096325</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">JE</div>
+              <div class="member-name">Jorge Alejandro Erazo Durán</div>
+              <div class="member-id">00047225</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">ER</div>
+              <div class="member-name">Elias Fernando Rivera Martinez</div>
+              <div class="member-id">00137525</div>
+            </div>
+            <div class="member-card">
+              <div class="member-avatar">DC</div>
+              <div class="member-name">Diego Fernando Canjura Paz</div>
+              <div class="member-id">00042025</div>
+            </div>
+            <div class="member-card" style="border-top-color: var(--secondary);">
+              <div class="member-avatar" style="background: var(--secondary);">CO</div>
+              <div class="member-name">César Andrés Olmedo Lobos</div>
+              <div class="member-id">00033225</div>
+            </div>
+            <div class="member-card" style="border-top-color: var(--secondary);">
+              <div class="member-avatar" style="background: var(--secondary);">CP</div>
+              <div class="member-name">César Flavio Pineda Cáceres</div>
+              <div class="member-id">00115625</div>
+            </div>
+            <div class="member-card" style="border-top-color: var(--warning);">
+              <div class="member-avatar" style="background: var(--warning);">EM</div>
+              <div class="member-name">Erick Alejandro Mejicanos Mariona</div>
+              <div class="member-id">00057324</div>
+            </div>
+            <div class="member-card" style="background: var(--primary); color:#FFF; border-top-color: var(--warning); justify-content:center;">
+              <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#FDBA74; font-weight:700;">Metodología</div>
+              <div style="font-size:14px; font-weight:700; line-height:1.35;">Trabajo paralelo en GitHub con contratos API REST y datos simulados</div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 2 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: EL PROBLEMA Y OBJETIVO -->
+      <section class="slide" data-title="El Problema y Objetivo del Producto"
+        data-notes="Pitch del problema y objetivo (45 seg): ¿Por qué una constructora necesita este ERP? En El Salvador, operar con hojas de cálculo aisladas genera pérdidas reales: materiales que desaparecen entre bodegas, obras que inician sin permisos exponiendo a multas, y cuotas mal facturadas. Nuestro objetivo fue construir un ERP web donde las reglas de negocio no son sugerencias, sino validaciones automáticas que protegen la rentabilidad de la empresa.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Propuesta de Valor</div>
+            <h2 class="slide-title">Del Caos de Hojas de Cálculo al Control Total</h2>
+          </div>
+          <span class="slide-tag">Caso de Negocio</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--danger card--white">
+              <div class="card-title" style="color: var(--danger);">El Problema en el Sector Construcción</div>
+              <p class="card-text">Cuando cada frente (permisos, bodega, obra, planilla y ventas) opera en sistemas desconectados o Excel:</p>
+              <ul class="clean-list warn">
+                <li><strong>Inventarios desfasados:</strong> lo comprado no coincide con lo consumido en obra.</li>
+                <li><strong>Riesgo legal y multas:</strong> trabajos que arrancan sin tener los permisos institucionales completos.</li>
+                <li><strong>Fugas en planillas:</strong> mezcla de cálculos entre personal administrativo y cuadrillas de campo.</li>
+                <li><strong>Errores de cobro:</strong> cuotas de financiamiento mal calculadas o facturadas sin correlativo ni IVA correcto.</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <div class="card-title" style="color: var(--secondary);">Objetivo General y Específicos</div>
+              <p class="card-text"><strong>Objetivo General:</strong> Construir una aplicación web funcional que integre la administración de proyectos constructivos y ventas inmobiliarias haciendo cumplir las reglas de negocio.</p>
+              <ul class="clean-list">
+                <li><strong>Bloquear inicios sin permisos</strong> (OPAMSS, MARN y ANDA aprobados).</li>
+                <li><strong>Trazabilidad de materiales:</strong> bodega central → proyecto → descuento por avance.</li>
+                <li><strong>Costeo real automático</strong> de materiales consumidos en cada tramo de obra.</li>
+                <li><strong>Planillas separadas</strong> (administrativa con ley vs. campo sin deducciones).</li>
+                <li><strong>Planes de pago y facturación</strong> con correlativos automáticos y control por roles.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 3 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: VISIÓN GENERAL DE MÓDULOS -->
+      <section class="slide" data-title="Ecosistema Funcional — 5 Módulos"
+        data-notes="Visión panorámica (40 seg): Aquí vemos la arquitectura funcional del producto. Cinco módulos especializados que cubren todo el ciclo de vida de un desarrollo inmobiliario: desde que se gestionan los permisos y se compra cemento, hasta que se construye, se paga a los trabajadores y se escritura y cobra la vivienda al cliente final, todo gobernado por una capa transversal de seguridad.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Funcionalidad Integral</div>
+            <h2 class="slide-title">5 Módulos Conectados en Tiempo Real</h2>
+          </div>
+          <span class="slide-tag">Visión del Producto</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-5">
+            <div class="card card--primary card--white">
+              <span class="badge badge-primary">Módulo 1</span>
+              <div class="card-title">Planificación y Permisos</div>
+              <p class="card-text">Control de proyectos (casas en serie / apartamentos), fases constructivas y candado legal de permisos OPAMSS, MARN y ANDA.</p>
+            </div>
+            <div class="card card--warning card--white">
+              <span class="badge badge-warning">Módulo 2</span>
+              <div class="card-title">Bodega Multi-sitio</div>
+              <p class="card-text">Bodega central y bodegas por obra, traslados unidireccionales, Kardex auditable y alertas visuales de stock mínimo.</p>
+            </div>
+            <div class="card card--secondary card--white">
+              <span class="badge badge-secondary">Módulo 3</span>
+              <div class="card-title">Ejecución de Obra</div>
+              <p class="card-text">Partidas con recetas de materiales, reportes de avance por ingeniero residente y descuento automático de inventario.</p>
+            </div>
+            <div class="card card--primary card--white">
+              <span class="badge badge-primary">Módulo 4</span>
+              <div class="card-title">Recursos Humanos</div>
+              <p class="card-text">Planilla administrativa quincenal (ISSS, AFP, ISR) separada de la planilla de campo semanal, con boletas numeradas.</p>
+            </div>
+            <div class="card card--secondary card--white">
+              <span class="badge badge-secondary">Módulo 5</span>
+              <div class="card-title">Ventas y CRM</div>
+              <p class="card-text">Embudo CRM, inventario de unidades, amortización francesa automática y facturación (REC, FCF, CCF) con IVA 13%.</p>
+            </div>
+          </div>
+
+          <div class="callout callout-navy" style="justify-content: space-between;">
+            <div>
+              <strong>Capa Transversal de Seguridad y Auditoría:</strong> Autenticación <code>JWT</code> + contraseñas <code>bcryptjs</code> + <strong>6 Roles RBAC</strong> que garantizan que cada usuario opere únicamente su área de responsabilidad.
+            </div>
+            <span class="badge badge-primary" style="white-space:nowrap;">9 Rutas API REST</span>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 4 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: EMPLEADOS Y CLIENTES -->
+      <section class="slide" data-title="¿Qué hacen Empleados y Clientes?"
+        data-notes="Operación diaria de Empleados y Clientes (45 seg): En la práctica, ¿qué hace cada persona? Por el lado interno, cada empleado opera según su rol: el Gerente controla proyectos y permisos; el Bodeguero maneja compras y traslados; el Ingeniero Residente reporta avances de obra; RRHH liquida planillas; y Ventas atiende el CRM y factura. Por el lado de los clientes compradores, el sistema gestiona todo su recorrido: desde que cotizan una casa o apartamento hasta que reciben su plan de pagos, realizan sus abonos y obtienen sus facturas o CCF hasta liquidar la propiedad.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Operación Diaria</div>
+            <h2 class="slide-title">¿Qué hacen los Empleados y los Clientes?</h2>
+          </div>
+          <span class="slide-tag">Roles y Experiencia</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--primary card--white">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="card-title">Empleados (Según su Rol en el ERP)</div>
+                <span class="badge badge-primary">Uso Interno</span>
+              </div>
+              <ul class="clean-list navy">
+                <li><strong>Admin / Gerente de Proyecto:</strong> Crean proyectos, registran permisos (OPAMSS, MARN, ANDA) y administran usuarios.</li>
+                <li><strong>Bodeguero:</strong> Registra compras en bodega central, ejecuta traslados a proyectos y vigila alertas de stock mínimo.</li>
+                <li><strong>Ingeniero Residente:</strong> Reporta porcentajes de avance en obra para descontar materiales y calcular costos.</li>
+                <li><strong>Recursos Humanos (RRHH):</strong> Administra empleados, genera planillas administrativas y de campo, y emite boletas.</li>
+                <li><strong>Asesor de Ventas:</strong> Atiende clientes en el CRM, registra ventas de viviendas y factura cada abono.</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="card-title" style="color: var(--secondary);">Clientes (Compradores Inmobiliarios)</div>
+                <span class="badge badge-secondary">Ciclo Comercial</span>
+              </div>
+              <ul class="clean-list">
+                <li><strong>Seguimiento personalizado:</strong> Son atendidos por un asesor desde su primer contacto, visita agendada y cotización de vivienda.</li>
+                <li><strong>Compra y financiamiento:</strong> Adquieren casas o apartamentos disponibles con un <strong>plan de pagos claro</strong> (prima + cuotas mensuales fijas bajo sistema francés).</li>
+                <li><strong>Abonos y facturación formal:</strong> Realizan pagos de sus cuotas y reciben su comprobante oficial (<code>REC</code>, <code>FCF</code> o <code>CCF</code> si poseen NRC).</li>
+                <li><strong>Liquidación transparente:</strong> Al completar todas sus cuotas, su financiamiento queda marcado automáticamente como liquidado.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 5 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: MÓDULOS 1 Y 2 (REGLAS DE NEGOCIO) -->
+      <section class="slide" data-title="Reglas de Negocio: Permisos e Inventario"
+        data-notes="Profundización Módulos 1 y 2 (50 seg): Lo que vende este sistema son sus reglas de negocio estrictas. En Planificación, el sistema impide salir de diseño o iniciar obra si faltan permisos: incluso indica exactamente cuántos faltan, por ejemplo '1 de 3'. Una vez iniciada la obra, nadie puede revocar un permiso. En Bodega, todo entra por la Central con factura o CCF del proveedor; los traslados solo van hacia proyectos si hay saldo, no se pueden editar ni borrar, y cada movimiento queda en el Kardex.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Reglas de Negocio · Módulos 1 y 2</div>
+            <h2 class="slide-title">Candado de Permisología y Control de Bodegas</h2>
+          </div>
+          <span class="slide-tag">Cero Irregularidades</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--primary card--white">
+              <div class="card-title">1. Planificación y Permisología</div>
+              <p class="card-text">Fases: <code>diseño</code> → <code>terracería</code> → <code>obra gris</code> → <code>acabados</code>.<br/>Estados: <code>planificación</code>, <code>en ejecución</code>, <code>suspendido</code>, <code>finalizado</code>.</p>
+              <ul class="clean-list navy">
+                <li><strong>Regla Central (3/3):</strong> Ningún proyecto sale de <em>diseño</em> ni pasa a <em>ejecución</em> sin tener aprobados los 3 permisos: <strong>OPAMSS, MARN y ANDA</strong>.</li>
+                <li><strong>Diagnóstico claro:</strong> Si falta alguno, el sistema rechaza el cambio e informa el avance (ej. <em>"1 de 3 aprobados"</em>).</li>
+                <li><strong>Inmutabilidad post-inicio:</strong> Una vez iniciada la obra, el sistema impide revocar la aprobación de un permiso.</li>
+              </ul>
+            </div>
+
+            <div class="card card--warning card--white">
+              <div class="card-title">2. Bodega e Inventario Multi-sitio</div>
+              <p class="card-text">1 Bodega Central + 1 Bodega por cada proyecto activo.</p>
+              <ul class="clean-list warn">
+                <li><strong>Flujo estricto:</strong> Compras solo ingresan a <em>Bodega Central</em> (con proveedor y factura/CCF). Traslados solo <strong>Central → Proyecto</strong> (prohibido entre proyectos o retorno).</li>
+                <li><strong>Trazabilidad Kardex:</strong> Todo ingreso, salida o consumo se registra con su saldo resultante; detalles de traslado son <strong>inmutables</strong>.</li>
+                <li><strong>Alertas tempranas:</strong> Si <code>stock_actual &lt; stock_minimo</code>, se activa <code>bajo_minimo</code> con alerta visual roja en pantalla.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 6 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: MÓDULO 3 (EJECUCIÓN Y PARTIDAS) -->
+      <section class="slide" data-title="Reglas de Negocio: Ejecución y Costos de Obra"
+        data-notes="Profundización Módulo 3 (45 seg): En Ejecución de Obra conectamos el avance físico con el inventario y el costo financiero. Cada partida tiene una receta al 100%. Cuando el ingeniero residente reporta un avance —por ejemplo del 0% al 25%— el sistema calcula el proporcional de la receta, verifica que la bodega del proyecto tenga stock, descuenta los materiales automáticamente y registra el costo real del tramo: $1,191.25 en nuestro caso de prueba.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Reglas de Negocio · Módulo 3</div>
+            <h2 class="slide-title">Ejecución de Obra y Costeo Automático por Receta</h2>
+          </div>
+          <span class="slide-tag">Control de Costos</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-asym">
+            <div class="card card--secondary card--white">
+              <div class="card-title">Flujo de Avance Físico y Financiero</div>
+              <ul class="clean-list">
+                <li>Cada partida (ej. <em>fundición de losa</em>) pertenece a una fase y define una <strong>receta de materiales al 100%</strong>.</li>
+                <li>El <strong>Ingeniero Residente</strong> reporta el nuevo porcentaje de avance.</li>
+                <li>El sistema calcula el tramo recorrido (ej. 0% → 25%), descuenta automáticamente los materiales de la bodega del proyecto y acumula el costo real en la partida.</li>
+              </ul>
+              <div class="callout callout-warn" style="margin-top:6px;">
+                <div>
+                  <strong>4 Validaciones de Rechazo Automático:</strong> (1) Quien reporta no es ingeniero activo, (2) % anterior no coincide, (3) proyecto no está en ejecución, o (4) stock insuficiente en bodega.
+                </div>
+              </div>
+            </div>
+
+            <div class="card card--primary card--white" style="justify-content:space-between;">
+              <div>
+                <span class="badge badge-secondary" style="margin-bottom:8px;">Ejemplo Real (Datos de Prueba)</span>
+                <div class="card-title">Avance de Partida: 0% → 25%</div>
+                <p class="card-text" style="margin-top:4px;">Receta base al 100% incluye 200 bolsas de cemento. Al reportar 25%:</p>
+              </div>
+              <table class="mini-table">
+                <thead>
+                  <tr><th>Material</th><th>Consumo (25%)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Cemento</td><td><strong>50 bolsas</strong></td></tr>
+                  <tr><td>Hierro</td><td><strong>10 quintales</strong></td></tr>
+                  <tr><td>Arena</td><td><strong>7.5 m³</strong></td></tr>
+                </tbody>
+              </table>
+              <div class="stat-box" style="border-left-color: var(--secondary);">
+                <div class="stat-num" style="color: var(--secondary);">$1,191.25</div>
+                <div class="stat-label">Costo de avance calculado y registrado en Kardex</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 7 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: MÓDULO 4 (RRHH Y PLANILLAS) -->
+      <section class="slide" data-title="Reglas de Negocio: Recursos Humanos"
+        data-notes="Profundización Módulo 4 (40 seg): En Recursos Humanos resolvemos una realidad clave de la industria: el personal administrativo y las cuadrillas de campo no se pagan igual. La planilla administrativa es quincenal y aplica ISSS (3%), AFP (7.25%) e ISR según tramos guardados en base de datos —actualizables sin tocar código—. La planilla de campo es semanal, por día o destajo, sin deducciones de ley. Ambas generan su boleta de pago numerada.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Reglas de Negocio · Módulo 4</div>
+            <h2 class="slide-title">Planilla Diferenciada: Administrativa vs. Campo</h2>
+          </div>
+          <span class="slide-tag">Cumplimiento Laboral SV</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--primary card--white">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="card-title">Planilla Administrativa</div>
+                <span class="badge badge-primary">Quincenal</span>
+              </div>
+              <ul class="clean-list navy">
+                <li>Parte del salario mensual dividido en quincenas.</li>
+                <li><strong>Deducciones de ley:</strong> ISSS (<code>3%</code>), AFP (<code>7.25%</code>) y retención de <strong>ISR</strong> según tabla de tramos.</li>
+                <li><strong>Parametrizable sin código:</strong> Porcentajes y tramos viven en <code>parametros_planilla</code> y <code>tramos_renta</code>.</li>
+              </ul>
+              <div style="background: var(--bg); border-radius:8px; padding:12px; margin-top:4px; font-size:12.5px;">
+                <strong>Ejemplo ($900/mes → $450/quincena):</strong><br/>
+                ISSS: -$13.50 · AFP: -$32.63 → Base gravada: $403.87<br/>
+                ISR: -$25.62 → <strong style="color:var(--primary);">Neto a pagar: $378.25</strong>
+              </div>
+            </div>
+
+            <div class="card card--warning card--white">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="card-title">Planilla de Campo (Cuadrillas)</div>
+                <span class="badge badge-warning">Semanal</span>
+              </div>
+              <ul class="clean-list warn">
+                <li>Modalidad flexible según obra: pago por <strong>día trabajado</strong> (días × tarifa diaria) o <strong>a destajo</strong> (unidades de obra × tarifa unitaria).</li>
+                <li><strong>Cero deducciones de ley:</strong> <code>descuento_isss</code>, <code>descuento_afp</code> y <code>descuento_isr</code> registrados en <code>0.00</code>.</li>
+                <li>Control de presupuesto por proyecto asignado.</li>
+              </ul>
+              <div class="callout callout-success" style="margin-top:auto;">
+                <strong>Comprobante Oficial:</strong> Ambos tipos de planilla generan automáticamente una <strong>boleta de pago individual</strong> con su número correlativo.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 8 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: MÓDULO 5 (VENTAS, CRM Y FACTURACIÓN) -->
+      <section class="slide" data-title="Reglas de Negocio: Ventas, CRM y Facturación"
+        data-notes="Profundización Módulo 5 (45 seg): Finalmente, cerramos el ciclo comercial. El CRM gestiona al cliente desde prospecto hasta cierre. Al concretar una venta, la unidad pasa a vendida y se genera automáticamente el plan de pagos bajo el sistema francés (7.50% anual por defecto, ajustando la última cuota para saldo exacto). Cada abono se factura con correlativo automático REC, FCF o CCF —exigiendo NRC para crédito fiscal— y desglosando IVA del 13%.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Reglas de Negocio · Módulo 5</div>
+            <h2 class="slide-title">CRM Inmobiliario, Financiamiento y Facturación</h2>
+          </div>
+          <span class="slide-tag">Ciclo Comercial</span>
+        </div>
+        <div class="slide-body">
+          <div class="card card--white" style="padding: 12px 18px;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Embudo de Seguimiento CRM</div>
+            <div class="flow-row">
+              <span class="flow-step">1. Prospecto</span><span class="flow-arrow">→</span>
+              <span class="flow-step">2. Contactado</span><span class="flow-arrow">→</span>
+              <span class="flow-step">3. Visita Agendada</span><span class="flow-arrow">→</span>
+              <span class="flow-step">4. Cotizado</span><span class="flow-arrow">→</span>
+              <span class="flow-step won">5. Cerrado Ganado</span>
+              <span style="font-size:12px; color:var(--text-muted); margin-left:8px;">(o <em>Descartado</em>)</span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card card--primary card--white">
+              <div class="card-title">Plan de Pagos (Sistema Francés)</div>
+              <ul class="clean-list navy">
+                <li>Al vender, la unidad pasa a <code>vendida</code> y el cliente a <code>cerrado ganado</code>.</li>
+                <li>Genera <strong>Prima (Cuota 0)</strong> + cuotas mensuales iguales con interés (tasa por defecto <strong>7.50% anual</strong>).</li>
+                <li>Ajuste automático en la última cuota para liquidar exactamente a $0.00.</li>
+                <li><em>Ejemplo:</em> Financiar <strong>$116,000</strong> a 12 meses al 7.50% = cuota mensual de <strong>$10,063.86</strong>.</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <div class="card-title">Facturación de Abonos y Tributación</div>
+              <ul class="clean-list">
+                <li>Tipos de documento con correlativo automático de 8 dígitos: <code>REC-</code> (Recibo), <code>FCF-</code> (Consumidor Final) y <code>CCF-</code> (Crédito Fiscal).</li>
+                <li><strong>Validación fiscal:</strong> <code>CCF</code> solo se emite si el cliente tiene <strong>NRC registrado</strong>.</li>
+                <li>Separa subtotal gravado del exento y calcula <strong>IVA 13%</strong>.</li>
+                <li>Al pagar la última cuota, la venta pasa automáticamente a <code>liquidada</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 9 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 9: ARQUITECTURA Y STACK TECNOLÓGICO -->
+      <section class="slide" data-title="Arquitectura y Stack Tecnológico"
+        data-notes="Arquitectura y tecnologías (40 seg): Técnicamente, el sistema sigue una arquitectura Cliente-Servidor desacoplada vía API REST sobre HTTP/JSON. En el frontend usamos React 18.3.1 con Vite 6.0.5 y Bootstrap/Reactstrap; en el backend, Node.js con Express 5.3.0; y en persistencia, PostgreSQL 16 contenedorizado con Docker Compose para que el entorno sea 100% reproducible en cualquier servidor.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Ingeniería de Software</div>
+            <h2 class="slide-title">Arquitectura Desacoplada y Stack Tecnológico</h2>
+          </div>
+          <span class="slide-tag">3 Capas + Docker</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card card--primary card--white">
+              <span class="badge badge-primary">Capa de Presentación</span>
+              <div class="card-title">Frontend SPA</div>
+              <ul class="clean-list navy">
+                <li><strong>React 18.3.1</strong> + <strong>Vite 6.0.5</strong></li>
+                <li><strong>react-router-dom 6.30.6</strong> (enrutamiento declarativo)</li>
+                <li><strong>Bootstrap 5.3.9</strong> + <strong>Reactstrap 9.2.3</strong> + CSS modular</li>
+                <li><strong>Axios 1.21.1</strong> con interceptores JWT</li>
+                <li>Compilación optimizada a <code>dist/</code> (Nginx / Apache)</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <span class="badge badge-secondary">Capa de Servicios</span>
+              <div class="card-title">Backend API REST</div>
+              <ul class="clean-list">
+                <li><strong>Node.js</strong> (CommonJS) + <strong>Express 5.3.0</strong></li>
+                <li>Comunicación <strong>HTTP/JSON</strong> stateless</li>
+                <li>Seguridad: <code>jsonwebtoken</code> (JWT) + <code>bcryptjs</code></li>
+                <li>Utilidades: <code>cors</code>, <code>dotenv</code>, pool <code>pg</code></li>
+                <li>Ejecución con Nodemon (dev) o <code>npm start</code> (prod)</li>
+              </ul>
+            </div>
+
+            <div class="card card--warning card--white">
+              <span class="badge badge-warning">Capa de Datos</span>
+              <div class="card-title">Base de Datos</div>
+              <ul class="clean-list warn">
+                <li><strong>PostgreSQL 16</strong> (<code>postgres:16-alpine</code>)</li>
+                <li>Contenedorizado con <strong>Docker Compose</strong> (puerto 5432)</li>
+                <li><strong>Sin ORM:</strong> SQL puro y <strong>PL/pgSQL</strong> para máxima integridad</li>
+                <li>Inicialización automática con <code>schema.sql</code> y <code>seed.sql</code> + <code>pg_isready</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="callout callout-navy" style="justify-content:center; text-align:center; font-weight:600;">
+            Cliente React (Vite :5173 / Nginx) &nbsp;◀── HTTP/JSON + Bearer JWT ──▶&nbsp; API Express (:3000) &nbsp;◀── Pool pg ──▶&nbsp; PostgreSQL 16 (Docker :5432)
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 10 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: BASE DE DATOS (PUNTOS IMPORTANTES) -->
+      <section class="slide" data-title="Base de Datos — Integridad en PostgreSQL 16"
+        data-notes="Detalle de Base de Datos (45 seg): Decidimos no usar ORM y llevar las reglas críticas directamente a PostgreSQL 16. Tenemos 26 tablas, 14 funciones PL/pgSQL, 12 triggers y 19 índices. ¿Por qué? Porque así garantizamos que ninguna operación —venga de donde venga— pueda dejar un inventario en negativo gracias a UPDATEs atómicos con verificación de saldo y bloqueos FOR UPDATE en avances y ventas.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Capa de Datos · PostgreSQL 16</div>
+            <h2 class="slide-title">Integridad Transaccional y Lógica en Base de Datos</h2>
+          </div>
+          <span class="slide-tag">Sin ORM · SQL / PL/pgSQL</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-4">
+            <div class="stat-box">
+              <div class="stat-num">26</div>
+              <div class="stat-label">Tablas normalizadas por módulo</div>
+            </div>
+            <div class="stat-box" style="border-left-color: var(--secondary);">
+              <div class="stat-num" style="color: var(--secondary);">12</div>
+              <div class="stat-label">Triggers de validación y proceso</div>
+            </div>
+            <div class="stat-box" style="border-left-color: var(--warning);">
+              <div class="stat-num" style="color: var(--warning);">14</div>
+              <div class="stat-label">Funciones almacenadas PL/pgSQL</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">19</div>
+              <div class="stat-label">Índices (17 FK + 2 únicos)</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card card--white">
+              <div class="card-title">Concurrencia y Blindaje de Datos</div>
+              <ul class="clean-list">
+                <li><strong>Cero inventarios negativos:</strong> Descuento mediante una sola sentencia <code>UPDATE</code> condicionada al saldo disponible + bloqueo de fila <code>FOR UPDATE</code> en avances y ventas.</li>
+                <li><strong>Restricciones <code>CHECK</code>:</strong> Valida estados, fases (<code>DISENO</code> sin tilde), totales de factura (<code>gravado + exento + IVA</code>) y salario neto.</li>
+                <li><strong>Integridad referencial:</strong> Impide eliminar materiales con existencias; borra detalles en cascada con su encabezado.</li>
+              </ul>
+            </div>
+
+            <div class="card card--white">
+              <div class="card-title">Automatización y Datos de Prueba (<code>seed.sql</code>)</div>
+              <ul class="clean-list navy">
+                <li><strong>3 Secuencias</strong> para correlativos automáticos (<code>REC-</code>, <code>FCF-</code>, <code>CCF-</code> + 8 dígitos).</li>
+                <li><strong>Funciones clave:</strong> <code>fn_procesar_avance_obra</code>, <code>fn_generar_plan_pagos</code> (sistema francés) y <code>fn_siguiente_correlativo</code>.</li>
+                <li><strong>Escenario listo en <code>seed.sql</code>:</strong> 2 proyectos (1 bloqueado con 1/3 permisos y 1 en ejecución con 3/3), bodega central, 5 materiales, 4 empleados, venta financiada y 3 usuarios con hash bcrypt.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 11 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 11: BACKEND Y FRONTEND (PUNTOS IMPORTANTES) -->
+      <section class="slide" data-title="Backend y Frontend — Puntos Clave"
+        data-notes="Detalle de Backend y Frontend (45 seg): En el Backend, Express expone 9 conjuntos de rutas modulares bajo /api, con manejo centralizado de errores mediante AppError y asyncHandler. En el Frontend, React organiza todas sus vistas bajo ProtectedRoute en AppRoutes.jsx, usando Axios con interceptores para inyectar el token automáticamente y redirigir a /login ante cualquier 401, además de contar con un modo respaldo VITE_USE_MOCK.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Capas de Aplicación</div>
+            <h2 class="slide-title">Puntos Clave del Backend y Frontend</h2>
+          </div>
+          <span class="slide-tag">Node.js + React</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="card card--secondary card--white">
+              <div class="card-title" style="color: var(--secondary);">Backend (Node.js + Express 5.3.0)</div>
+              <ul class="clean-list">
+                <li><strong>9 Rutas Modulares bajo <code>/api</code></strong> (+ <code>/api/health</code>): <code>auth</code>, <code>proyectos</code>, <code>inventario</code>, <code>obra</code>, <code>rrhh/empleados</code>, <code>rrhh/planilla</code>, <code>ventas/clientes</code>, <code>ventas</code> y facturación.</li>
+                <li><strong>Pool PostgreSQL</strong> centralizado en <code>backend/src/config/db.js</code>.</li>
+                <li><strong>Manejo de Errores Robusto:</strong> Clase <code>AppError</code>, wrapper <code>asyncHandler.js</code> (<code>Promise.resolve(...).catch(next)</code>) y middlewares <code>notFound</code> / <code>errorHandler</code> (códigos 401, 403, 404, 500).</li>
+                <li><strong>Servicios de Negocio:</strong> Cálculo de planilla administrativa y de campo (<code>planilla_service.js</code>) e indicador <code>bajo_minimo</code> en <code>stockDeBodega</code>.</li>
+              </ul>
+            </div>
+
+            <div class="card card--primary card--white">
+              <div class="card-title">Frontend (React 18.3.1 + Vite 6.0.5)</div>
+              <ul class="clean-list navy">
+                <li><strong>Enrutamiento Protegido:</strong> Todas las vistas en <code>AppRoutes.jsx</code> envueltas con <code>ProtectedRoute</code> + contexto global <code>AuthContext.jsx</code> y hook <code>useAuth</code>.</li>
+                <li><strong>Cliente HTTP Inteligente (<code>axiosConfig.js</code>):</strong> Interceptor de petición inyecta el JWT desde <code>localStorage</code>; interceptor de respuesta redirige a <code>/login</code> ante un <code>401</code>.</li>
+                <li><strong>Hooks y UI Modular:</strong> Hooks personalizados (<code>useFetch</code>, <code>useInventario</code>), componentes Bootstrap 5.3.9 + Reactstrap 9.2.3 y paleta corporativa en <code>variables.css</code>.</li>
+                <li><strong>Respaldo opcional:</strong> Soporte <code>VITE_USE_MOCK === 'true'</code> en auth, proyectos e inventario para desarrollo ágil.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 12 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 12: SEGURIDAD IMPLEMENTADA -->
+      <section class="slide" data-title="Seguridad Implementada"
+        data-notes="Seguridad (40 seg): La seguridad no es un añadido, está implementada en las tres capas. Las contraseñas se almacenan como hash de bcryptjs, nunca en texto plano. La sesión es stateless mediante JWT en cabecera Bearer. En el backend, verificarToken y permitirRoles filtran cada endpoint según los 6 roles definidos. Y en la base de datos, el trigger trg_validar_usuario_rol impide crear un ingeniero residente o vendedor sin su ficha de empleado.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Seguridad y Control de Acceso</div>
+            <h2 class="slide-title">Defensa en Profundidad: JWT, Roles y Validación en BD</h2>
+          </div>
+          <span class="slide-tag">RBAC en 3 Capas</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="card card--primary card--white">
+              <div class="card-title">Autenticación Stateless</div>
+              <ul class="clean-list navy">
+                <li>Inicio de sesión por <strong>usuario o correo</strong>.</li>
+                <li>Contraseñas protegidas con hash <strong><code>bcryptjs</code></strong> (nunca texto plano).</li>
+                <li>Emisión de tokens <strong>JWT</strong> (<code>Bearer &lt;token&gt;</code>) verificados en cada petición.</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <div class="card-title">Autorización en API y UI</div>
+              <ul class="clean-list">
+                <li>Middlewares <code>verificarToken</code> y <code>permitirRoles</code> en rutas Express.</li>
+                <li><code>ProtectedRoute</code> en React bloquea acceso no autenticado.</li>
+                <li>Redirección automática a <code>/login</code> al expirar sesión (HTTP 401).</li>
+              </ul>
+            </div>
+
+            <div class="card card--warning card--white">
+              <div class="card-title">Regla de Identidad en BD</div>
+              <ul class="clean-list warn">
+                <li>Trigger <code>trg_validar_usuario_rol</code> en PostgreSQL.</li>
+                <li><strong>Ingeniero Residente</strong> y <strong>Ventas</strong> deben estar ligados a un empleado real.</li>
+                <li>El ingeniero debe estar marcado como <strong>ingeniero activo</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card card--white" style="padding: 14px 18px;">
+            <div style="font-size:12px; font-weight:700; color:var(--primary); margin-bottom:8px; text-transform:uppercase;">
+              6 Roles Definidos en <code>backend/src/utils/constants.js</code>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <span class="badge badge-primary" style="font-size:12px; padding:6px 12px;">ADMIN</span>
+              <span class="badge badge-primary" style="font-size:12px; padding:6px 12px;">GERENTE_PROYECTO</span>
+              <span class="badge badge-secondary" style="font-size:12px; padding:6px 12px;">INGENIERO_RESIDENTE</span>
+              <span class="badge badge-warning" style="font-size:12px; padding:6px 12px;">BODEGUERO</span>
+              <span class="badge badge-secondary" style="font-size:12px; padding:6px 12px;">VENTAS</span>
+              <span class="badge badge-primary" style="font-size:12px; padding:6px 12px;">RRHH</span>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 13 / 14</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 13: CIERRE / PITCH FINAL -->
+      <section class="slide slide--dark" data-title="Cierre — ¿Por qué elegir nuestro ERP?"
+        data-notes="Cierre comercial (35 seg): Para concluir, nuestro ERP transforma la operación de Inmobiliaria y Constructora SV en cuatro pilares: cero fugas de material gracias al Kardex y triggers atómicos; cumplimiento legal garantizado ante OPAMSS, MARN, ANDA y Hacienda; trazabilidad financiera completa desde la receta de obra hasta la última cuota facturada; y un despliegue limpio en Docker listo para producción. Muchas gracias, quedamos atentos a sus preguntas.">
+        <div class="slide-body" style="padding: 40px 56px; justify-content: space-between;">
+          <div>
+            <div style="font-size: 13px; font-weight: 700; letter-spacing: 1.8px; color: #FDBA74; text-transform: uppercase; margin-bottom: 8px;">
+              Conclusión y Valor Comercial
+            </div>
+            <h2 style="font-size: 36px; font-weight: 800; line-height: 1.15;">
+              ¿Por qué implementar este ERP en<br/>“Inmobiliaria y Constructora SV”?
+            </h2>
+          </div>
+
+          <div class="grid-2" style="gap: 16px;">
+            <div style="background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16); border-radius:10px; padding:18px;">
+              <div style="font-size:16px; font-weight:700; color:#6EE7B7; margin-bottom:6px;">1. Cero Fugas de Inventario</div>
+              <div style="font-size:13.5px; color:rgba(255,255,255,0.86); line-height:1.45;">Cada bolsa de cemento y quintal de hierro está respaldado por factura de compra, traslado inmutable y receta de avance de obra.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16); border-radius:10px; padding:18px;">
+              <div style="font-size:16px; font-weight:700; color:#FDBA74; margin-bottom:6px;">2. Cumplimiento Normativo Automático</div>
+              <div style="font-size:13.5px; color:rgba(255,255,255,0.86); line-height:1.45;">Candado de permisos OPAMSS/MARN/ANDA, planillas con ISSS/AFP/ISR parametrizables y facturación CCF/FCF con IVA 13%.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16); border-radius:10px; padding:18px;">
+              <div style="font-size:16px; font-weight:700; color:#93C5FD; margin-bottom:6px;">3. Integridad Garantizada en Datos</div>
+              <div style="font-size:13.5px; color:rgba(255,255,255,0.86); line-height:1.45;">12 triggers y bloqueos concurrentes en PostgreSQL 16 aseguran que ninguna operación simultánea corrompa saldos ni cuentas.</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16); border-radius:10px; padding:18px;">
+              <div style="font-size:16px; font-weight:700; color:#FFFFFF; margin-bottom:6px;">4. Listo para Producción</div>
+              <div style="font-size:13.5px; color:rgba(255,255,255,0.86); line-height:1.45;">Arquitectura moderna React + Express + Docker Compose, reproducible en minutos y segura bajo JWT y 6 roles RBAC.</div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid rgba(255,255,255,0.18); padding-top:16px;">
+            <div style="font-size:18px; font-weight:700;">¡Gracias por su atención!</div>
+            <span class="badge" style="background: var(--warning); color:#FFF; font-size:13px; padding:8px 16px;">
+              Espacio para Demostración y Preguntas
+            </span>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV · UCA Ciclo 02, 2026</span>
+          <span>Diapositiva 14 / 14</span>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Speaker Notes Drawer -->
+    <div class="notes-drawer" id="notesDrawer">
+      <div class="notes-header">
+        <span>Guía del Expositor (Notas de Diapositiva)</span>
+        <span id="notesSlideTitle" style="color:#93C5FD;"></span>
+      </div>
+      <div class="notes-content" id="notesContent"></div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="controls-bar">
+      <div class="controls-group">
+        <button class="btn-ctrl" id="prevBtn" title="Anterior (←)">← Anterior</button>
+        <button class="btn-ctrl" id="nextBtn" title="Siguiente (→ / Espacio)">Siguiente →</button>
+        <span id="slideCounter" style="margin-left:8px; font-weight:700; color:#FFF;">1 / 14</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="controls-group">
+        <button class="btn-ctrl" id="notesBtn" title="Mostrar/ocultar guía del expositor (Tecla N)">Guía Expositor (N)</button>
+        <button class="btn-ctrl" id="overviewBtn" title="Vista general de diapositivas (Tecla G)">Índice (G)</button>
+        <button class="btn-ctrl" id="fullscreenBtn" title="Pantalla completa (Tecla F)">Pantalla Completa (F)</button>
+        <button class="btn-ctrl" id="printBtn" title="Imprimir o Guardar como PDF">Exportar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overview Modal -->
+  <div class="overview-modal" id="overviewModal">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; color:#FFF;">
+      <h3 style="font-size:20px;">Índice de Diapositivas</h3>
+      <button class="btn-ctrl" id="closeOverviewBtn">Cerrar (Esc)</button>
+    </div>
+    <div class="overview-grid" id="overviewGrid"></div>
+  </div>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const total = slides.length;
+      let current = 0;
+
+      const counterEl = document.getElementById('slideCounter');
+      const progressEl = document.getElementById('progressFill');
+      const notesDrawer = document.getElementById('notesDrawer');
+      const notesContent = document.getElementById('notesContent');
+      const notesSlideTitle = document.getElementById('notesSlideTitle');
+      const notesBtn = document.getElementById('notesBtn');
+      const overviewModal = document.getElementById('overviewModal');
+      const overviewGrid = document.getElementById('overviewGrid');
+
+      function renderOverview() {
+        overviewGrid.innerHTML = '';
+        slides.forEach((s, idx) => {
+          const item = document.createElement('div');
+          item.className = 'overview-item' + (idx === current ? ' current' : '');
+          item.innerHTML = `
+            <div style="font-size:11px; color:#FDBA74; font-weight:700; margin-bottom:4px;">DIAPOSITIVA ${idx + 1}</div>
+            <div style="font-size:14px; font-weight:700;">${s.dataset.title || 'Sin título'}</div>
+          `;
+          item.addEventListener('click', () => {
+            goTo(idx);
+            overviewModal.classList.remove('open');
+          });
+          overviewGrid.appendChild(item);
+        });
+      }
+
+      function goTo(index) {
+        if (index < 0) index = 0;
+        if (index >= total) index = total - 1;
+        slides[current].classList.remove('active');
+        current = index;
+        slides[current].classList.add('active');
+
+        counterEl.textContent = `${current + 1} / ${total}`;
+        progressEl.style.width = `${((current + 1) / total) * 100}%`;
+        notesContent.textContent = slides[current].dataset.notes || '';
+        notesSlideTitle.textContent = slides[current].dataset.title || '';
+      }
+
+      document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+
+      notesBtn.addEventListener('click', () => {
+        notesDrawer.classList.toggle('open');
+        notesBtn.classList.toggle('active');
+      });
+
+      document.getElementById('overviewBtn').addEventListener('click', () => {
+        renderOverview();
+        overviewModal.classList.toggle('open');
+      });
+
+      document.getElementById('closeOverviewBtn').addEventListener('click', () => {
+        overviewModal.classList.remove('open');
+      });
+
+      document.getElementById('fullscreenBtn').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
+      document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+          if (!overviewModal.classList.contains('open')) {
+            e.preventDefault();
+            goTo(current + 1);
+          }
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          if (!overviewModal.classList.contains('open')) {
+            e.preventDefault();
+            goTo(current - 1);
+          }
+        } else if (e.key.toLowerCase() === 'n') {
+          notesDrawer.classList.toggle('open');
+          notesBtn.classList.toggle('active');
+        } else if (e.key.toLowerCase() === 'g') {
+          renderOverview();
+          overviewModal.classList.toggle('open');
+        } else if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        } else if (e.key === 'Escape') {
+          overviewModal.classList.remove('open');
+        }
+      });
+
+      goTo(0);
+    })();
+  </script>
+</body>
+</html>
