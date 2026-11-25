@@ -2,6 +2,6 @@
   "success": true,
   "data": {
     "token": "mock-token-123",
-    "user": { "id": 1, "nombre": "Usuario Demo", "rol": "admin" }
+    "user": { "id": 1, "nombre_completo": "Usuario Demo", "username": "demo", "rol": "ADMIN" }
   }
 }
