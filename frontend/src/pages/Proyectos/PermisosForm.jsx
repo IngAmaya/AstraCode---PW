@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Form, FormGroup, Label, Input, Button, Card, CardBody, Spinner } from 'reactstrap';
-import { getProyectoById, updatePermisos } from '../../api/proyectosApi';
-import { PERMISOS_REQUERIDOS } from '../../utils/constants';
+import { Form, FormGroup, Label, Input, Button, Card, CardBody, Spinner, Alert } from 'reactstrap';
+import { getProyectoById, actualizarPermisos } from '../../api/proyectosApi';
+import { ENTIDADES_PERMISO } from '../../utils/constants';
 
 function PermisosForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [permisos, setPermisos] = useState({ opamss: false, marn: false, anda: false });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     getProyectoById(id).then((proyecto) => {
@@ -23,8 +24,13 @@ function PermisosForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await updatePermisos(id, permisos);
-    navigate(`/proyectos/${id}`);
+    setError('');
+    try {
+      await actualizarPermisos(id, permisos);
+      navigate(`/proyectos/${id}`);
+    } catch (err) {
+      setError('No se pudo actualizar los permisos.');
+    }
   }
 
   if (loading) return <Spinner color="primary" />;
@@ -33,8 +39,9 @@ function PermisosForm() {
     <Card>
       <CardBody>
         <h4 className="text-brand mb-3">Permisos del Proyecto</h4>
+        {error && <Alert color="danger">{error}</Alert>}
         <Form onSubmit={handleSubmit}>
-          {PERMISOS_REQUERIDOS.map((permiso) => {
+          {ENTIDADES_PERMISO.map((permiso) => {
             const key = permiso.toLowerCase();
             return (
               <FormGroup check key={key} className="mb-2">
