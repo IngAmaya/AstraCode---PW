@@ -61,8 +61,24 @@ const obtenerClienteBasico = async (id) => {
   return rows[0] || null;
 };
 
+// Un asesor es un empleado administrativo (no de campo ni ingeniero) cuyo cargo es de asesor
+// o que tiene usuario con rol VENTAS. Devuelve null si el empleado no existe o no califica.
 const obtenerAsesor = async (id) => {
-  const { rows } = await pool.query('SELECT id, activo FROM empleados WHERE id = $1', [id]);
+  const { rows } = await pool.query(
+    `SELECT e.id, e.activo
+       FROM empleados e
+      WHERE e.id = $1
+        AND e.tipo_empleado = 'ADMINISTRATIVO'
+        AND e.es_ingeniero = FALSE
+        AND (
+          e.cargo ILIKE '%asesor%'
+          OR EXISTS (
+            SELECT 1 FROM usuarios u JOIN roles r ON r.id = u.rol_id
+             WHERE u.empleado_id = e.id AND r.nombre = 'VENTAS'
+          )
+        )`,
+    [id]
+  );
   return rows[0] || null;
 };
 

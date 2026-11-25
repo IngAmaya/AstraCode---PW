@@ -15,6 +15,17 @@ const positivo = (v, nombre) => {
   return n;
 };
 
+// Número >= 0 estricto. Si el valor no viene (undefined/null/''), usa 'porDefecto' (o error si no hay)
+const noNegativo = (v, nombre, porDefecto) => {
+  if (v === undefined || v === null || v === '') {
+    if (porDefecto === undefined) throw new AppError(`${nombre} es obligatorio`, 400);
+    return porDefecto;
+  }
+  const n = typeof v === 'number' ? v : Number(String(v).trim());
+  if (!Number.isFinite(n) || n < 0) throw new AppError(`${nombre} debe ser un número mayor o igual a 0`, 400);
+  return n;
+};
+
 // ---- Materiales -------------------------------------------------------------
 
 const listarMateriales = (query = {}) => model.listarMateriales({ busqueda: query.q });
@@ -30,15 +41,14 @@ const crearMaterial = async (entrada) => {
   if (!entrada.codigo)       errores.push('codigo es obligatorio');
   if (!entrada.nombre)       errores.push('nombre es obligatorio');
   if (!entrada.unidad_medida) errores.push('unidad_medida es obligatorio');
-  if (Number(entrada.costo_unitario) < 0) errores.push('costo_unitario no puede ser negativo');
   if (errores.length) throw new AppError(errores.join('; '), 400);
 
   const d = {
     codigo:        String(entrada.codigo).trim().toUpperCase(),
     nombre:        String(entrada.nombre).trim(),
     unidad_medida: String(entrada.unidad_medida).trim().toUpperCase(),
-    costo_unitario: Number(entrada.costo_unitario) || 0,
-    stock_minimo:  Number(entrada.stock_minimo)   || 10,
+    costo_unitario: noNegativo(entrada.costo_unitario, 'costo_unitario'),
+    stock_minimo:  noNegativo(entrada.stock_minimo, 'stock_minimo', 10), // 0 es válido; solo se usa 10 si no se envía
   };
   try {
     const id = await model.crearMaterial(d);
@@ -55,8 +65,8 @@ const actualizarMaterial = async (id, entrada) => {
     codigo:        String(entrada.codigo        ?? existente.codigo).trim().toUpperCase(),
     nombre:        String(entrada.nombre        ?? existente.nombre).trim(),
     unidad_medida: String(entrada.unidad_medida ?? existente.unidad_medida).trim().toUpperCase(),
-    costo_unitario: Number(entrada.costo_unitario ?? existente.costo_unitario),
-    stock_minimo:  Number(entrada.stock_minimo  ?? existente.stock_minimo),
+    costo_unitario: noNegativo(entrada.costo_unitario ?? existente.costo_unitario, 'costo_unitario'),
+    stock_minimo:  noNegativo(entrada.stock_minimo  ?? existente.stock_minimo, 'stock_minimo'),
   };
   try {
     await model.actualizarMaterial(id, d);
@@ -83,8 +93,8 @@ const listarKardex = (query = {}) => {
   if (query.tipo && !TIPOS_MOV.includes(query.tipo))
     throw new AppError(`tipo debe ser: ${TIPOS_MOV.join(', ')}`, 400);
   return model.kardex({
-    bodegaId:   query.bodega_id  ? Number(query.bodega_id)   : undefined,
-    materialId: query.material_id ? Number(query.material_id) : undefined,
+    bodegaId:   query.bodega_id   !== undefined ? entero(query.bodega_id,   'bodega_id')   : undefined,
+    materialId: query.material_id !== undefined ? entero(query.material_id, 'material_id') : undefined,
     tipo:       query.tipo,
     limite:     query.limite,
   });
@@ -123,6 +133,7 @@ const registrarIngreso = async (entrada) => {
   } catch (err) {
     // El trigger lanza excepción si no es bodega CENTRAL
     if (err.code === 'P0001') throw new AppError(err.message, 400);
+    if (err.code === '23503') throw new AppError('La bodega o alguno de los materiales indicados no existe', 404);
     throw err;
   }
 };
@@ -166,6 +177,7 @@ const registrarTraslado = async (entrada) => {
     return { ...traslado, detalles: detalleBD };
   } catch (err) {
     if (err.code === 'P0001') throw new AppError(err.message, 409); // stock insuficiente o bodega inválida
+    if (err.code === '23503') throw new AppError('Alguna de las bodegas o materiales indicados no existe', 404);
     throw err;
   }
 };

@@ -56,8 +56,13 @@ const upsertReceta = async (partidaId, materialId, cantidad) => {
   );
 };
 
-const eliminarRecetaItem = async (recetaId) => {
-  await pool.query('DELETE FROM receta_partida_materiales WHERE id = $1', [recetaId]);
+// Solo borra si el item pertenece a esa partida. Devuelve true si se eliminó algo.
+const eliminarRecetaItem = async (partidaId, recetaId) => {
+  const { rowCount } = await pool.query(
+    'DELETE FROM receta_partida_materiales WHERE id = $1 AND partida_id = $2',
+    [recetaId, partidaId]
+  );
+  return rowCount > 0;
 };
 
 // ---- Avances ----------------------------------------------------------------
@@ -97,6 +102,20 @@ const registrarAvance = async (d) => {
   return rows[0].id;
 };
 
+// Empleado vinculado a un usuario del sistema (null si el usuario no tiene empleado_id)
+const empleadoDeUsuario = async (usuarioId) => {
+  const { rows } = await pool.query('SELECT empleado_id FROM usuarios WHERE id = $1', [usuarioId]);
+  return rows[0]?.empleado_id ?? null;
+};
+
+const obtenerEmpleado = async (empleadoId) => {
+  const { rows } = await pool.query(
+    'SELECT id, es_ingeniero, activo FROM empleados WHERE id = $1',
+    [empleadoId]
+  );
+  return rows[0] || null;
+};
+
 const consumosDeAvance = async (avanceId) => {
   const { rows } = await pool.query(
     `SELECT c.id, c.material_id, m.nombre AS material, m.unidad_medida,
@@ -113,4 +132,5 @@ module.exports = {
   listarPartidas, obtenerPartida, crearPartida,
   recetaDePartida, upsertReceta, eliminarRecetaItem,
   listarAvances, obtenerAvance, registrarAvance, consumosDeAvance,
+  empleadoDeUsuario, obtenerEmpleado,
 };

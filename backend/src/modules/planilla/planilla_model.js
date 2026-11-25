@@ -1,4 +1,5 @@
 const pool = require('../../config/db');
+const AppError = require('../../utils/AppError');
 
 // Consultas SQL de planillas, detalle (boletas) y parámetros legales
 
@@ -151,6 +152,18 @@ const boletasDeEmpleado = async (empleadoId) => {
 const crearCompleta = async (cabecera, detalles, totales, prefijo) => {
   return conTransaccion(async (client) => {
     await client.query('SELECT pg_advisory_xact_lock(4101)');
+
+    // Se revisa el traslape DENTRO del bloqueo: si dos peticiones del mismo período llegan a la vez,
+    // la segunda espera aquí y ya encuentra la planilla creada por la primera.
+    const { rows: traslape } = await client.query(
+      `SELECT codigo_planilla FROM planillas
+       WHERE tipo_planilla = $1 AND periodo_inicio <= $3::date AND periodo_fin >= $2::date
+       LIMIT 1`,
+      [cabecera.tipo_planilla, cabecera.periodo_inicio, cabecera.periodo_fin]
+    );
+    if (traslape.length) {
+      throw new AppError(`El período se traslapa con la planilla ${traslape[0].codigo_planilla}`, 409);
+    }
 
     const anio = cabecera.periodo_inicio.slice(0, 4);
     const prefijoPlanilla = `PLA-${prefijo}-${anio}-`;

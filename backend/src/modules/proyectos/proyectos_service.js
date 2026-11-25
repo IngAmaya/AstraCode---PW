@@ -149,7 +149,7 @@ const interpretarPermisos = (entrada, actuales) => {
     const valor = entrada[entidad.toLowerCase()];
     if (valor === undefined) continue;
     if (typeof valor !== 'boolean') throw new AppError(`${entidad.toLowerCase()} debe ser true o false`, 400);
-    const actual = actuales.find((p) => p.entidad === entidad);
+    const actual = actuales.find((p) => p.entidad === entidad) || { estado: 'PENDIENTE', numero_resolucion: null, observaciones: null, fecha_aprobacion: null };
     // true aprueba; false solo quita la aprobación (no pisa un EN_REVISION o RECHAZADO)
     const estado = valor ? 'APROBADO' : actual.estado === 'APROBADO' ? 'PENDIENTE' : actual.estado;
     resultado.push({

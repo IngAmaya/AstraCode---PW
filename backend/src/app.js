@@ -7,6 +7,9 @@ const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
 
+// Detrás de NginX/Apache hay que confiar en el proxy para que el límite de intentos use la IP real
+if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY);
+
 // Seguridad: cabeceras HTTP
 app.use(helmet());
 

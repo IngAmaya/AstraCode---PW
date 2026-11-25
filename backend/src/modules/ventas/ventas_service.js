@@ -95,7 +95,7 @@ const crearVenta = async (entrada) => {
   if (unidad.estado === 'VENDIDA') throw new AppError(`La unidad ${unidad.codigo_unidad} ya fue vendida`, 409);
   if (!(await model.obtenerClienteBasico(clienteId))) throw new AppError('El cliente no existe', 404);
   const asesor = await model.obtenerAsesor(asesorId);
-  if (!asesor || !asesor.activo) throw new AppError('El asesor no existe o está inactivo', 404);
+  if (!asesor || !asesor.activo) throw new AppError('El asesor no existe, está inactivo o el empleado no es asesor de ventas', 404);
 
   // Si no se indica otro precio, se vende al precio de lista de la unidad
   const precio = redondear(aNumero(entrada.precio_acordado, Number(unidad.precio_venta)));

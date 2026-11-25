@@ -19,7 +19,7 @@ const eliminarRecetaItem = asyncHandler(async (req, res) => {
 
 const listarAvances    = asyncHandler(async (req, res) => res.json({ ok: true, data: await service.listarAvances(req.query) }));
 const obtenerAvance    = asyncHandler(async (req, res) => res.json({ ok: true, data: await service.obtenerAvance(leerId(req.params.id)) }));
-const registrarAvance  = asyncHandler(async (req, res) => res.status(201).json({ ok: true, data: await service.registrarAvance(req.body) }));
+const registrarAvance  = asyncHandler(async (req, res) => res.status(201).json({ ok: true, data: await service.registrarAvance(req.body, req.usuario) }));
 
 module.exports = {
   listarPartidas, obtenerPartida, crearPartida,

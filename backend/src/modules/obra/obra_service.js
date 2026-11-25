@@ -1,4 +1,5 @@
 const AppError = require('../../utils/AppError');
+const { ROLES } = require('../../utils/constants');
 const model = require('./obra_model');
 
 const FASES = ['TERRACERIA', 'OBRA_GRIS', 'ACABADOS'];
@@ -12,7 +13,7 @@ const listarPartidas = (query = {}) => {
   if (query.fase && !FASES.includes(query.fase))
     throw new AppError(`fase debe ser: ${FASES.join(', ')}`, 400);
   return model.listarPartidas({
-    proyectoId: query.proyecto_id ? Number(query.proyecto_id) : undefined,
+    proyectoId: query.proyecto_id !== undefined ? entero(query.proyecto_id, 'proyecto_id') : undefined,
     fase: query.fase,
   });
 };
@@ -64,14 +65,15 @@ const actualizarRecetaItem = async (partidaId, entrada) => {
 
 const eliminarRecetaItem = async (partidaId, recetaId) => {
   await obtenerPartida(partidaId);
-  await model.eliminarRecetaItem(recetaId);
+  const eliminado = await model.eliminarRecetaItem(partidaId, recetaId);
+  if (!eliminado) throw new AppError('El item de receta no existe en esta partida', 404);
 };
 
 // ---- Avances ----------------------------------------------------------------
 
 const listarAvances = (query = {}) => model.listarAvances({
-  partidaId:   query.partida_id   ? Number(query.partida_id)   : undefined,
-  ingenieroId: query.ingeniero_id ? Number(query.ingeniero_id) : undefined,
+  partidaId:   query.partida_id   !== undefined ? entero(query.partida_id, 'partida_id')     : undefined,
+  ingenieroId: query.ingeniero_id !== undefined ? entero(query.ingeniero_id, 'ingeniero_id') : undefined,
 });
 
 const obtenerAvance = async (id) => {
@@ -81,16 +83,38 @@ const obtenerAvance = async (id) => {
   return { ...avance, consumos };
 };
 
-const registrarAvance = async (entrada) => {
+// Define quién firma el avance:
+//  - INGENIERO_RESIDENTE: siempre es su propio empleado (el body se ignora, no puede suplantar a otro)
+//  - ADMIN / GERENTE_PROYECTO: deben indicar ingeniero_id y debe ser un ingeniero activo
+const resolverIngeniero = async (usuario, entrada) => {
+  let empleadoId;
+  if (usuario.rol === ROLES.INGENIERO) {
+    empleadoId = await model.empleadoDeUsuario(usuario.id);
+    if (!empleadoId) throw new AppError('Su usuario no está vinculado a un empleado ingeniero', 403);
+  } else {
+    if (!entrada.ingeniero_id) throw new AppError('ingeniero_id es obligatorio', 400);
+    empleadoId = entero(entrada.ingeniero_id, 'ingeniero_id');
+  }
+
+  const empleado = await model.obtenerEmpleado(empleadoId);
+  if (!empleado) throw new AppError('El ingeniero indicado no existe', 404);
+  if (!empleado.es_ingeniero || !empleado.activo) {
+    throw new AppError('El empleado no es un ingeniero activo con permiso para reportar avances', 400);
+  }
+  return empleadoId;
+};
+
+const registrarAvance = async (entrada, usuario) => {
   const errores = [];
   if (!entrada.partida_id)     errores.push('partida_id es obligatorio');
-  if (!entrada.ingeniero_id)   errores.push('ingeniero_id es obligatorio');
   if (entrada.porcentaje_nuevo === undefined) errores.push('porcentaje_nuevo es obligatorio');
   if (errores.length) throw new AppError(errores.join('; '), 400);
 
   const pct = Number(entrada.porcentaje_nuevo);
   if (!Number.isFinite(pct) || pct <= 0 || pct > 100)
     throw new AppError('porcentaje_nuevo debe estar entre 1 y 100', 400);
+
+  const ingenieroId = await resolverIngeniero(usuario, entrada);
 
   // El porcentaje_anterior se toma de la partida actual para garantizar consistencia
   const partida = await model.obtenerPartida(entero(entrada.partida_id, 'partida_id'));
@@ -102,7 +126,7 @@ const registrarAvance = async (entrada) => {
   try {
     const id = await model.registrarAvance({
       partida_id:          partida.id,
-      ingeniero_id:        entero(entrada.ingeniero_id, 'ingeniero_id'),
+      ingeniero_id:        ingenieroId,
       porcentaje_anterior: Number(partida.porcentaje_avance),
       porcentaje_nuevo:    pct,
       observaciones:       entrada.observaciones ? String(entrada.observaciones).trim() : null,
@@ -111,6 +135,8 @@ const registrarAvance = async (entrada) => {
   } catch (err) {
     // Triggers lanzan P0001 con mensajes claros (stock insuficiente, proyecto no EN_EJECUCION, etc.)
     if (err.code === 'P0001') throw new AppError(err.message, 409);
+    if (err.code === '23503') throw new AppError('La partida o el ingeniero indicado no existe', 404);
+    if (err.code === '23514') throw new AppError('porcentaje_nuevo debe ser mayor que el anterior y no exceder 100', 400);
     throw err;
   }
 };
