@@ -752,10 +752,13 @@ BEGIN
         RAISE EXCEPTION 'La venta ID % no existe.', p_venta_id;
     END IF;
 
-    -- Cuota 0: prima
-    INSERT INTO plan_pagos_cuotas
-        (venta_id, numero_cuota, tipo_cuota, fecha_vencimiento, monto_capital, monto_interes, monto_total_cuota)
-    VALUES (v.id, 0, 'PRIMA', v.fecha_venta, v.monto_prima, 0, v.monto_prima);
+    -- Cuota 0: prima. Si la prima es $0 no hay nada que cobrar: no se crea la cuota
+    -- (así no se obliga a emitir un documento de $0 antes de poder cobrar la cuota 1).
+    IF v.monto_prima > 0 THEN
+        INSERT INTO plan_pagos_cuotas
+            (venta_id, numero_cuota, tipo_cuota, fecha_vencimiento, monto_capital, monto_interes, monto_total_cuota)
+        VALUES (v.id, 0, 'PRIMA', v.fecha_venta, v.monto_prima, 0, v.monto_prima);
+    END IF;
 
     saldo := v.monto_financiar;
     IF saldo <= 0 THEN

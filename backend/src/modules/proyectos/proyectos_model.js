@@ -67,7 +67,7 @@ const crear = async (d) =>
 
     await client.query(
       `INSERT INTO permisos_proyecto (proyecto_id, entidad)
-       SELECT $1, e FROM unnest(ARRAY['OPAMSS', 'MARN', 'ANDA']) AS e`,
+       SELECT $1::int, e FROM unnest(ARRAY['OPAMSS', 'MARN', 'ANDA']) AS e`,
       [id]
     );
 
@@ -116,15 +116,15 @@ const actualizarPermisos = async (proyectoId, cambios) =>
       await client.query(
         `INSERT INTO permisos_proyecto
            (proyecto_id, entidad, numero_resolucion, estado, fecha_aprobacion, observaciones)
-         VALUES ($1, $2, $3, $4,
-                 CASE WHEN $4 = 'APROBADO' THEN COALESCE($5::date, CURRENT_DATE) END,
-                 $6)
+         VALUES ($1::int, $2::varchar, $3::varchar, $4::varchar,
+                 CASE WHEN $7::boolean THEN COALESCE($5::date, CURRENT_DATE) END,
+                 $6::text)
          ON CONFLICT (proyecto_id, entidad) DO UPDATE
             SET numero_resolucion = EXCLUDED.numero_resolucion,
                 estado            = EXCLUDED.estado,
                 fecha_aprobacion  = EXCLUDED.fecha_aprobacion,
                 observaciones     = EXCLUDED.observaciones`,
-        [proyectoId, c.entidad, c.numero_resolucion, c.estado, c.fecha_aprobacion, c.observaciones]
+        [proyectoId, c.entidad, c.numero_resolucion, c.estado, c.fecha_aprobacion, c.observaciones, c.estado === 'APROBADO']
       );
     }
   });

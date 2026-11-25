@@ -10,11 +10,20 @@ const FECHA_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const redondear = (numero) => Math.round((numero + Number.EPSILON) * 100) / 100;
 const aNumero = (valor, porDefecto) =>
   valor === undefined || valor === null || valor === '' ? porDefecto : Number(valor);
+const fechaValida = (valor) => {
+  if (typeof valor !== 'string' || !FECHA_REGEX.test(valor)) return false;
+  const fecha = new Date(`${valor}T00:00:00Z`);
+  // Una fecha imposible (2026-13-45) da Invalid Date: toISOString() lanzaría excepción y respondería 500
+  return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor;
+};
 const entero = (valor, nombre) => {
   const numero = Number(valor);
   if (!Number.isInteger(numero) || numero <= 0) throw new AppError(`${nombre} es obligatorio y debe ser un entero positivo`, 400);
   return numero;
 };
+
+// Id opcional de un filtro de la URL: si viene, debe ser un entero positivo (si no, 400 y no 500)
+const filtroId = (valor, nombre) => (valor === undefined || valor === '' ? undefined : entero(valor, nombre));
 
 // ---- Unidades ------------------------------------------------------------------------
 
@@ -28,7 +37,7 @@ const listarUnidades = async (query = {}) => {
   return model.listarUnidades({
     estado: query.estado,
     tipo: query.tipo,
-    proyectoId: query.proyecto_id ? Number(query.proyecto_id) : undefined,
+    proyectoId: filtroId(query.proyecto_id, 'proyecto_id'),
   });
 };
 
@@ -78,12 +87,26 @@ const listarVentas = async (query = {}) => {
   }
   return model.listarVentas({
     estado: query.estado,
-    clienteId: query.cliente_id ? Number(query.cliente_id) : undefined,
-    asesorId: query.asesor_id ? Number(query.asesor_id) : undefined,
+    clienteId: filtroId(query.cliente_id, 'cliente_id'),
+    asesorId: filtroId(query.asesor_id, 'asesor_id'),
   });
 };
 
 const obtenerVenta = (id) => planDeVenta(id);
+
+// Errores de la BD que son reglas de negocio (no fallos del servidor). Ocurren, por ejemplo, cuando
+// dos asesores venden la misma unidad al mismo tiempo: el segundo pasa la revisión previa pero la BD lo rechaza.
+const traducirErrorVenta = (error) => {
+  if (error.code === '23505') {
+    if (String(error.constraint || '').includes('unidad_id')) return new AppError('La unidad ya fue vendida', 409);
+    return new AppError('Ya existe un contrato con ese número', 409);
+  }
+  if (error.code === 'P0001') return new AppError(error.message, 409); // trigger: unidad ya vendida
+  if (error.code === '23503') return new AppError('La unidad, el cliente o el asesor indicado no existe', 404);
+  if (error.code === '23514') return new AppError('Los montos de la venta no son válidos (precio = prima + monto a financiar)', 400);
+  if (error.code === '22007' || error.code === '22008') return new AppError('fecha_venta no es una fecha válida', 400);
+  return error;
+};
 
 const crearVenta = async (entrada) => {
   const unidadId = entero(entrada.unidad_id, 'unidad_id');
@@ -107,7 +130,7 @@ const crearVenta = async (entrada) => {
   if (!Number.isFinite(prima) || prima < 0) errores.push('monto_prima es obligatorio y no puede ser negativo');
   else if (prima > precio) errores.push('monto_prima no puede ser mayor que el precio acordado');
   if (!Number.isFinite(tasa) || tasa < 0 || tasa > 100) errores.push('tasa_interes_anual debe estar entre 0 y 100');
-  if (entrada.fecha_venta && !FECHA_REGEX.test(entrada.fecha_venta)) errores.push('fecha_venta inválida (use AAAA-MM-DD)');
+  if (entrada.fecha_venta && !fechaValida(entrada.fecha_venta)) errores.push('fecha_venta inválida (use AAAA-MM-DD)');
 
   const financiar = redondear(precio - prima);
   // Con prima del 100% no hay cuotas, pero la tabla exige plazo > 0
@@ -117,18 +140,23 @@ const crearVenta = async (entrada) => {
   }
   if (errores.length) throw new AppError(errores.join('; '), 400);
 
-  const id = await model.crearVenta({
-    numero_contrato: entrada.numero_contrato ? String(entrada.numero_contrato).trim() : null,
-    unidad_id: unidadId,
-    cliente_id: clienteId,
-    asesor_id: asesorId,
-    fecha_venta: entrada.fecha_venta || null,
-    precio_acordado: precio,
-    monto_prima: prima,
-    monto_financiar: financiar,
-    tasa_interes_anual: tasa,
-    plazo_meses: plazo,
-  });
+  let id;
+  try {
+    id = await model.crearVenta({
+      numero_contrato: entrada.numero_contrato ? String(entrada.numero_contrato).trim() : null,
+      unidad_id: unidadId,
+      cliente_id: clienteId,
+      asesor_id: asesorId,
+      fecha_venta: entrada.fecha_venta || null,
+      precio_acordado: precio,
+      monto_prima: prima,
+      monto_financiar: financiar,
+      tasa_interes_anual: tasa,
+      plazo_meses: plazo,
+    });
+  } catch (error) {
+    throw traducirErrorVenta(error);
+  }
   return planDeVenta(id);
 };
 

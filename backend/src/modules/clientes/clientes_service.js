@@ -51,7 +51,12 @@ const listar = async (query = {}) => {
   }
   return model.listar({
     estado: query.estado,
-    asesorId: query.asesor_id ? Number(query.asesor_id) : undefined,
+    asesorId: (() => {
+      if (query.asesor_id === undefined || query.asesor_id === '') return undefined;
+      const n = Number(query.asesor_id);
+      if (!Number.isInteger(n) || n <= 0) throw new AppError('asesor_id debe ser un entero positivo', 400);
+      return n;
+    })(),
     busqueda: query.q,
   });
 };

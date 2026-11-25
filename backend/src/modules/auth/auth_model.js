@@ -12,6 +12,18 @@ const buscarPorLogin = async (login) => {
   return rows[0] || null;
 };
 
+// Estado ACTUAL del usuario en la BD (el token solo prueba quién era cuando inició sesión)
+const buscarSesion = async (id) => {
+  const { rows } = await pool.query(
+    `SELECT u.id, u.username, u.activo, u.empleado_id, r.nombre AS rol
+     FROM usuarios u
+     JOIN roles r ON r.id = u.rol_id
+     WHERE u.id = $1`,
+    [id]
+  );
+  return rows[0] || null;
+};
+
 const buscarRolPorNombre = async (nombre) => {
   const { rows } = await pool.query('SELECT id, nombre FROM roles WHERE nombre = $1', [nombre]);
   return rows[0] || null;
@@ -27,4 +39,4 @@ const crearUsuario = async (d) => {
   return rows[0].id;
 };
 
-module.exports = { buscarPorLogin, buscarRolPorNombre, crearUsuario };
+module.exports = { buscarPorLogin, buscarSesion, buscarRolPorNombre, crearUsuario };

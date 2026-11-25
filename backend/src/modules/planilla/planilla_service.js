@@ -15,10 +15,12 @@ const FECHA_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 // Redondeo a 2 decimales (la tabla exige neto = devengado - deducciones exacto)
 const redondear = (numero) => Math.round((numero + Number.EPSILON) * 100) / 100;
 
-const fechaValida = (valor) =>
-  typeof valor === 'string' &&
-  FECHA_REGEX.test(valor) &&
-  new Date(`${valor}T00:00:00Z`).toISOString().slice(0, 10) === valor;
+const fechaValida = (valor) => {
+  if (typeof valor !== 'string' || !FECHA_REGEX.test(valor)) return false;
+  const fecha = new Date(`${valor}T00:00:00Z`);
+  // Una fecha imposible (2026-13-45) da Invalid Date: toISOString() lanzaría excepción y respondería 500
+  return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor;
+};
 
 const diasEntre = (inicio, fin) =>
   (Date.parse(`${fin}T00:00:00Z`) - Date.parse(`${inicio}T00:00:00Z`)) / 86400000 + 1;

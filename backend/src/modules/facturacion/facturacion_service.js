@@ -6,6 +6,21 @@ const TIPOS_DOCUMENTO = ['RECIBO', 'FACTURA_CONSUMIDOR_FINAL', 'CCF'];
 const METODOS_PAGO = ['EFECTIVO', 'TRANSFERENCIA', 'CHEQUE', 'FINANCIAMIENTO_BANCARIO'];
 const FECHA_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
+// Fecha AAAA-MM-DD que además exista en el calendario (rechaza 2026-13-45)
+const fechaValida = (valor) => {
+  if (typeof valor !== 'string' || !FECHA_REGEX.test(valor)) return false;
+  const fecha = new Date(`${valor}T00:00:00Z`);
+  // Una fecha imposible (2026-13-45) da Invalid Date: toISOString() lanzaría excepción y respondería 500
+  return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor;
+};
+
+const filtroId = (valor, nombre) => {
+  if (valor === undefined || valor === '') return undefined;
+  const n = Number(valor);
+  if (!Number.isInteger(n) || n <= 0) throw new AppError(`${nombre} debe ser un entero positivo`, 400);
+  return n;
+};
+
 const redondear = (numero) => Math.round((numero + Number.EPSILON) * 100) / 100;
 
 // REGLA DE IVA
@@ -82,14 +97,14 @@ const listar = async (query = {}) => {
     throw new AppError(`tipo debe ser: ${TIPOS_DOCUMENTO.join(', ')}`, 400);
   }
   for (const campo of ['desde', 'hasta']) {
-    if (query[campo] && !FECHA_REGEX.test(query[campo])) {
+    if (query[campo] !== undefined && !fechaValida(query[campo])) {
       throw new AppError(`${campo} inválida (use AAAA-MM-DD)`, 400);
     }
   }
   return model.listar({
     tipo: query.tipo,
-    clienteId: query.cliente_id ? Number(query.cliente_id) : undefined,
-    ventaId: query.venta_id ? Number(query.venta_id) : undefined,
+    clienteId: filtroId(query.cliente_id, 'cliente_id'),
+    ventaId: filtroId(query.venta_id, 'venta_id'),
     desde: query.desde,
     hasta: query.hasta,
   });

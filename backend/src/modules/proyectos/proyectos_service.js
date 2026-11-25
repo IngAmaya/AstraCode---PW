@@ -9,10 +9,12 @@ const ESTADOS_PERMISO = ['PENDIENTE', 'EN_REVISION', 'APROBADO', 'RECHAZADO'];
 const FECHA_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 const texto = (valor) => (typeof valor === 'string' ? valor.trim() || null : valor ?? null);
-const fechaValida = (valor) =>
-  typeof valor === 'string' &&
-  FECHA_REGEX.test(valor) &&
-  new Date(`${valor}T00:00:00Z`).toISOString().slice(0, 10) === valor;
+const fechaValida = (valor) => {
+  if (typeof valor !== 'string' || !FECHA_REGEX.test(valor)) return false;
+  const fecha = new Date(`${valor}T00:00:00Z`);
+  // Una fecha imposible (2026-13-45) da Invalid Date: toISOString() lanzaría excepción y respondería 500
+  return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor;
+};
 
 // Errores de los triggers de la BD (bloqueo de permisología): son reglas de negocio, no fallos
 const traducirError = (error) => {
