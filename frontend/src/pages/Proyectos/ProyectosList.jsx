@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Table, Button, Spinner, Badge } from 'reactstrap';
 import { useFetch } from '../../hooks/useFetch';
 import { getProyectos } from '../../api/proyectosApi';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatCurrency, formatDate, formatEstado } from '../../utils/formatters';
 
 function ProyectosList() {
   const { data: proyectos, loading, error } = useFetch(getProyectos, []);
@@ -30,8 +30,8 @@ function ProyectosList() {
               <td>{p.codigo}</td>
               <td>{p.nombre}</td>
               <td>{p.tipo_proyecto === 'CASAS_SERIE' ? 'Casas en serie' : 'Apartamentos'}</td>
-              <td><Badge color="info">{p.fase_actual}</Badge></td>
-              <td><Badge color="secondary">{p.estado}</Badge></td>
+              <td><Badge color="info">{formatEstado(p.fase_actual)}</Badge></td>
+              <td><Badge color="secondary">{formatEstado(p.estado)}</Badge></td>
               <td>{formatCurrency(p.presupuesto_total)}</td>
               <td>
                 {p.puede_iniciar_obra

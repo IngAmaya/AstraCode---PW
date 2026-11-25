@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Card, CardBody, Spinner, Button, Badge, Row, Col } from 'reactstrap';
 import { useFetch } from '../../hooks/useFetch';
 import { getProyectoById } from '../../api/proyectosApi';
-import { formatCurrency, formatDate } from '../../utils/formatters';
+import { formatCurrency, formatDate, formatEstado } from '../../utils/formatters';
 
 function ProyectoDetalle() {
   const { id } = useParams();
@@ -17,8 +17,8 @@ function ProyectoDetalle() {
       <CardBody>
         <h4 className="text-brand">{proyecto.codigo} — {proyecto.nombre}</h4>
         <Row className="mb-3">
-          <Col md="3"><Badge color="info">{proyecto.fase_actual}</Badge></Col>
-          <Col md="3"><Badge color="secondary">{proyecto.estado}</Badge></Col>
+          <Col md="3"><Badge color="info">{formatEstado(proyecto.fase_actual)}</Badge></Col>
+          <Col md="3"><Badge color="secondary">{formatEstado(proyecto.estado)}</Badge></Col>
           <Col md="3">
             {proyecto.puede_iniciar_obra
               ? <Badge color="success">Permisos completos</Badge>
