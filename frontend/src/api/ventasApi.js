@@ -1,37 +1,15 @@
-import axiosConfig from './axiosConfig.js';
-
-export async function getClientes(id) {
-  try {
-    const response = await axiosConfig.get(id ? `/ventas/clientes/${id}` : '/ventas/clientes');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function createCliente(data) {
-  try {
-    const response = await axiosConfig.post('/ventas/clientes', data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function updateCliente(id, data) {
-  try {
-    const response = await axiosConfig.put(`/ventas/clientes/${id}`, data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function deleteCliente(id) {
-  try {
-    const response = await axiosConfig.delete(`/ventas/clientes/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
+import api from './axiosConfig.js';
+const data = (r) => r.data.data;
+export const getClientes = async (id,params={}) => data(await api.get(id ? `/ventas/clientes/${id}` : '/ventas/clientes',{params}));
+export const createCliente = async (body) => data(await api.post('/ventas/clientes',body));
+export const updateCliente = async (id,body) => data(await api.put(`/ventas/clientes/${id}`,body));
+export const deleteCliente = async (id) => data(await api.delete(`/ventas/clientes/${id}`));
+export const changeClienteStatus = async (id,estado) => data(await api.patch(`/ventas/clientes/${id}/estado`,{estado_embudo:estado}));
+export const getUnidades = async (params={}) => data(await api.get('/ventas/unidades',{params}));
+export const getVentas = async (params={}) => data(await api.get('/ventas/contratos',{params}));
+export const createVenta = async (body) => data(await api.post('/ventas/contratos',body));
+export const getPlanesCliente = async (id) => data(await api.get(`/ventas/plan-pagos/${id}`));
+export const getPlanVenta = async (id) => data(await api.get(`/ventas/contratos/${id}/plan-pagos`));
+export const createAbono = async (clienteId,body) => data(await api.post(clienteId ? `/ventas/abonos/${clienteId}` : '/ventas/abonos',body));
+export const getFacturas = async (params={}) => data(await api.get('/ventas/facturacion',{params}));
+export const getFactura = async (id) => data(await api.get(`/ventas/facturacion/${id}`));

@@ -1,37 +1,14 @@
-import axiosConfig from './axiosConfig.js';
-
-export async function getEmpleados(id) {
-  try {
-    const response = await axiosConfig.get(id ? `/rrhh/empleados/${id}` : '/rrhh/empleados');
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function createEmpleado(data) {
-  try {
-    const response = await axiosConfig.post('/rrhh/empleados', data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function updateEmpleado(id, data) {
-  try {
-    const response = await axiosConfig.put(`/rrhh/empleados/${id}`, data);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function deleteEmpleado(id) {
-  try {
-    const response = await axiosConfig.delete(`/rrhh/empleados/${id}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
+import api from './axiosConfig.js';
+const data = (r) => r.data.data;
+export const getEmpleados = async (id,params={}) => data(await api.get(id ? `/rrhh/empleados/${id}` : '/rrhh/empleados',{params}));
+export const createEmpleado = async (body) => data(await api.post('/rrhh/empleados',body));
+export const updateEmpleado = async (id,body) => data(await api.put(`/rrhh/empleados/${id}`,body));
+export const deleteEmpleado = async (id) => data(await api.delete(`/rrhh/empleados/${id}`));
+export const getPlanillas = async (params={}) => data(await api.get('/rrhh/planilla',{params}));
+export const getPlanilla = async (id) => data(await api.get(`/rrhh/planilla/${id}`));
+export const previewPlanilla = async (body) => data(await api.post('/rrhh/planilla/calcular',body));
+export const createPlanilla = async (body) => data(await api.post('/rrhh/planilla',body));
+export const changePlanillaStatus = async (id,estado) => data(await api.patch(`/rrhh/planilla/${id}/estado`,{estado}));
+export const deletePlanilla = async (id) => data(await api.delete(`/rrhh/planilla/${id}`));
+export const getBoleta = async (id) => data(await api.get(`/rrhh/planilla/boletas/${id}`));
+export const getBoletasEmpleado = async (id) => data(await api.get(`/rrhh/planilla/empleado/${id}/boletas`));
