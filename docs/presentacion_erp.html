@@ -599,7 +599,7 @@
         </div>
         <div class="slide-footer">
           <span>Departamento de Electrónica e Informática · Antiguo Cuscatlán, El Salvador</span>
-          <span>Diapositiva 1 / 14</span>
+          <span>Diapositiva 1 / 16</span>
         </div>
       </section>
 
@@ -658,7 +658,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 2 / 14</span>
+          <span>Diapositiva 2 / 16</span>
         </div>
       </section>
 
@@ -700,7 +700,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 3 / 14</span>
+          <span>Diapositiva 3 / 16</span>
         </div>
       </section>
 
@@ -752,7 +752,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 4 / 14</span>
+          <span>Diapositiva 4 / 16</span>
         </div>
       </section>
 
@@ -798,7 +798,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 5 / 14</span>
+          <span>Diapositiva 5 / 16</span>
         </div>
       </section>
 
@@ -837,7 +837,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 6 / 14</span>
+          <span>Diapositiva 6 / 16</span>
         </div>
       </section>
 
@@ -892,7 +892,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 7 / 14</span>
+          <span>Diapositiva 7 / 16</span>
         </div>
       </section>
 
@@ -943,7 +943,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 8 / 14</span>
+          <span>Diapositiva 8 / 16</span>
         </div>
       </section>
 
@@ -994,7 +994,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 9 / 14</span>
+          <span>Diapositiva 9 / 16</span>
         </div>
       </section>
 
@@ -1052,7 +1052,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 10 / 14</span>
+          <span>Diapositiva 10 / 16</span>
         </div>
       </section>
 
@@ -1108,7 +1108,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 11 / 14</span>
+          <span>Diapositiva 11 / 16</span>
         </div>
       </section>
 
@@ -1147,7 +1147,117 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 12 / 14</span>
+          <span>Diapositiva 12 / 16</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 13: BACKEND — ARQUITECTURA INTERNA POR CAPAS -->
+      <section class="slide" data-title="Backend — Arquitectura Modular en 4 Capas"
+        data-notes="Profundización Backend 1/2 (45 seg): En el backend cada uno de los 9 módulos sigue estrictamente una estructura de cuatro archivos: routes recibe el endpoint y valida token y rol; controller procesa la petición HTTP y devuelve JSON uniforme; service ejecuta las reglas y cálculos de negocio; y model realiza las consultas SQL parametrizadas contra PostgreSQL. Esta separación nos permitió trabajar en paralelo sin pisarnos código y mantener el servidor fácil de mantener.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Backend · Diseño Interno</div>
+            <h2 class="slide-title">Arquitectura Modular en 4 Capas por Módulo</h2>
+          </div>
+          <span class="slide-tag">backend/src/modules/</span>
+        </div>
+        <div class="slide-body">
+          <div class="grid-4">
+            <div class="card card--primary card--white">
+              <span class="badge badge-primary">1. Rutas</span>
+              <div class="card-title"><code>*_routes.js</code></div>
+              <p class="card-text">Define los endpoints HTTP y encadena los middlewares de seguridad antes de llegar al controlador.</p>
+            </div>
+            <div class="card card--secondary card--white">
+              <span class="badge badge-secondary">2. Controlador</span>
+              <div class="card-title"><code>*_controller.js</code></div>
+              <p class="card-text">Extrae parámetros de <code>req</code>, llama al servicio y responde con JSON estandarizado.</p>
+            </div>
+            <div class="card card--warning card--white">
+              <span class="badge badge-warning">3. Servicio</span>
+              <div class="card-title"><code>*_service.js</code></div>
+              <p class="card-text">Aplica validaciones previas, cálculos (planillas, ventas) y lanza excepciones controladas.</p>
+            </div>
+            <div class="card card--primary card--white">
+              <span class="badge badge-primary">4. Modelo</span>
+              <div class="card-title"><code>*_model.js</code></div>
+              <p class="card-text">Ejecuta consultas SQL parametrizadas directo al pool <code>pg</code>, previniendo inyección SQL.</p>
+            </div>
+          </div>
+
+          <div class="card card--white" style="padding: 14px 18px;">
+            <div style="font-size:12px; font-weight:700; color:var(--primary); margin-bottom:8px; text-transform:uppercase;">
+              9 Módulos Independientes en <code>backend/src/modules/</code>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <span class="badge badge-primary">auth</span>
+              <span class="badge badge-primary">proyectos</span>
+              <span class="badge badge-warning">inventario</span>
+              <span class="badge badge-secondary">obra</span>
+              <span class="badge badge-secondary">clientes</span>
+              <span class="badge badge-secondary">ventas</span>
+              <span class="badge badge-secondary">facturacion</span>
+              <span class="badge badge-primary">empleados</span>
+              <span class="badge badge-primary">planilla</span>
+            </div>
+          </div>
+
+          <div class="callout callout-success">
+            <strong>Ventaja de Ingeniería:</strong> Cada módulo es autónomo y desacoplado; facilita pruebas aisladas, lectura rápida del código y escalamiento sin afectar al resto del sistema.
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 13 / 16</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 14: BACKEND — PIPELINE HTTP, SEGURIDAD Y RESILIENCIA -->
+      <section class="slide" data-title="Backend — Pipeline HTTP y Resiliencia"
+        data-notes="Profundización Backend 2/2 (45 seg): En app.js y db.js cuidamos la estabilidad y seguridad del servidor en producción. Cada petición pasa primero por Helmet para proteger cabeceras HTTP, CORS restringido únicamente al origen del frontend, Morgan para auditoría en desarrollo y parseo seguro de JSON. Además, el pool de PostgreSQL soporta tanto DATABASE_URL en la nube como variables locales en Docker, e incluye un listener de errores para que una conexión caída nunca tumbe el servidor.">
+        <div class="slide-header">
+          <div>
+            <div class="slide-kicker">Backend · Ciclo de Petición y Estabilidad</div>
+            <h2 class="slide-title">Pipeline HTTP, Protección de Cabeceras y Resiliencia</h2>
+          </div>
+          <span class="slide-tag">app.js + config/db.js</span>
+        </div>
+        <div class="slide-body">
+          <div class="card card--white" style="padding: 12px 18px;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Flujo de cada petición en <code>backend/src/app.js</code></div>
+            <div class="flow-row">
+              <span class="flow-step">helmet()</span><span class="flow-arrow">→</span>
+              <span class="flow-step">cors(FRONTEND_URL)</span><span class="flow-arrow">→</span>
+              <span class="flow-step">morgan('dev')</span><span class="flow-arrow">→</span>
+              <span class="flow-step">express.json()</span><span class="flow-arrow">→</span>
+              <span class="flow-step won">/api (routes)</span><span class="flow-arrow">→</span>
+              <span class="flow-step">notFound / errorHandler</span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card card--primary card--white">
+              <div class="card-title">Blindaje HTTP y Despliegue</div>
+              <ul class="clean-list navy">
+                <li><strong>Cabeceras seguras:</strong> <code>helmet()</code> mitiga XSS, clickjacking y MIME sniffing.</li>
+                <li><strong>CORS estricto:</strong> Solo acepta peticiones desde <code>FRONTEND_URL</code> con métodos <code>GET, POST, PUT, PATCH, DELETE</code>.</li>
+                <li><strong>Soporte Proxy:</strong> <code>trust proxy</code> configurable detrás de Nginx o Apache para conservar la IP real del cliente.</li>
+              </ul>
+            </div>
+
+            <div class="card card--secondary card--white">
+              <div class="card-title" style="color: var(--secondary);">Resiliencia y Parámetros Globales</div>
+              <ul class="clean-list">
+                <li><strong>Conexión dual (<code>db.js</code>):</strong> Soporta <code>DATABASE_URL</code> (nube) o variables <code>DB_*</code> (Docker/local).</li>
+                <li><strong>Tolerancia a fallos:</strong> <code>pool.on('error')</code> evita que una conexión inactiva caída detenga el proceso Node.js.</li>
+                <li><strong>Constantes fiscales (<code>constants.js</code>):</strong> Centraliza <code>IVA (13%)</code>, <code>ISSS (3%)</code> y <code>AFP (7.25%)</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>ERP Inmobiliaria y Constructora SV</span>
+          <span>Diapositiva 14 / 16</span>
         </div>
       </section>
 
@@ -1207,7 +1317,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV</span>
-          <span>Diapositiva 13 / 14</span>
+          <span>Diapositiva 15 / 16</span>
         </div>
       </section>
 
@@ -1252,7 +1362,7 @@
         </div>
         <div class="slide-footer">
           <span>ERP Inmobiliaria y Constructora SV · UCA Ciclo 02, 2026</span>
-          <span>Diapositiva 14 / 14</span>
+          <span>Diapositiva 16 / 16</span>
         </div>
       </section>
 
@@ -1272,7 +1382,7 @@
       <div class="controls-group">
         <button class="btn-ctrl" id="prevBtn" title="Anterior (←)">← Anterior</button>
         <button class="btn-ctrl" id="nextBtn" title="Siguiente (→ / Espacio)">Siguiente →</button>
-        <span id="slideCounter" style="margin-left:8px; font-weight:700; color:#FFF;">1 / 14</span>
+        <span id="slideCounter" style="margin-left:8px; font-weight:700; color:#FFF;">1 / 16</span>
         <div class="progress-track">
           <div class="progress-fill" id="progressFill"></div>
         </div>
