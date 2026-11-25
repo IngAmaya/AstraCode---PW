@@ -1,2 +1,139 @@
-import React,{useEffect,useState}from'react';import{useNavigate}from'react-router-dom';import{createAvance,getPartidas}from'../../api/obraApi';import{getEmpleados}from'../../api/rrhhApi';import{useAuth}from'../../hooks/useAuth';import{ROLES}from'../../utils/constants';import{Screen,Panel,Notice,Field}from'../../components/ui/Screen';
-export default function AvanceForm(){const nav=useNavigate(),{user}=useAuth();const[partidas,setPartidas]=useState([]),[ingenieros,setIngenieros]=useState([]),[form,setForm]=useState({partida_id:'',porcentaje_nuevo:'',ingeniero_id:'',observaciones:''}),[error,setError]=useState(null),[busy,setBusy]=useState(false);useEffect(()=>{getPartidas().then(setPartidas).catch(setError);if(user?.rol!==ROLES.INGENIERO)getEmpleados(undefined,{activo:true}).then(x=>setIngenieros(x.filter(e=>e.es_ingeniero))).catch(setError)},[user]);const change=e=>setForm({...form,[e.target.name]:e.target.value});async function submit(e){e.preventDefault();setBusy(true);setError(null);try{await createAvance({...form,partida_id:Number(form.partida_id),porcentaje_nuevo:Number(form.porcentaje_nuevo),...(user?.rol===ROLES.INGENIERO?{}:{ingeniero_id:Number(form.ingeniero_id)})});nav('/obra/avances')}catch(err){setError(err)}finally{setBusy(false)}}return <Screen title="Registrar avance" subtitle="El avance nuevo debe superar el porcentaje actual de la partida."><Notice error={error}/><Panel title="Datos del reporte"><form className="form-grid" onSubmit={submit}><Field label="Partida"><select required name="partida_id" value={form.partida_id} onChange={change}><option value="">Seleccione una partida</option>{partidas.map(p=><option value={p.id} key={p.id}>{p.codigo_partida} — {p.nombre} ({p.porcentaje_avance}%)</option>)}</select></Field>{user?.rol!==ROLES.INGENIERO&&<Field label="Ingeniero responsable"><select required name="ingeniero_id" value={form.ingeniero_id} onChange={change}><option value="">Seleccione ingeniero</option>{ingenieros.map(e=><option key={e.id} value={e.id}>{e.nombres} {e.apellidos}</option>)}</select></Field>}<Field label="Nuevo porcentaje (%)"><input required type="number" min="1" max="100" step="0.01" name="porcentaje_nuevo" value={form.porcentaje_nuevo} onChange={change}/></Field><Field label="Observaciones"><textarea rows="4" name="observaciones" value={form.observaciones} onChange={change}/></Field><div className="form-actions"><button className="btn btn-primary" disabled={busy}>{busy?'Guardando…':'Guardar avance'}</button><button type="button" className="btn btn-outline-secondary" onClick={()=>nav(-1)}>Cancelar</button></div></form></Panel></Screen>}
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createAvance, getPartidas } from '../../api/obraApi';
+import { getEmpleados } from '../../api/rrhhApi';
+import { useAuth } from '../../hooks/useAuth';
+import { ROLES } from '../../utils/constants';
+import { Screen, Panel, Notice, Field } from '../../components/ui/Screen';
+
+export default function AvanceForm() {
+  const nav = useNavigate();
+  const { user } = useAuth();
+
+  const [partidas, setPartidas] = useState([]);
+  const [ingenieros, setIngenieros] = useState([]);
+  const [form, setForm] = useState({
+    partida_id: '',
+    porcentaje_nuevo: '',
+    ingeniero_id: '',
+    observaciones: '',
+  });
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    getPartidas().then(setPartidas).catch(setError);
+
+    if (user?.rol !== ROLES.INGENIERO) {
+      getEmpleados(undefined, { activo: true })
+        .then((x) => setIngenieros(x.filter((e) => e.es_ingeniero)))
+        .catch(setError);
+    }
+  }, [user]);
+
+  const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  async function submit(e) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+
+    try {
+      await createAvance({
+        ...form,
+        partida_id: Number(form.partida_id),
+        porcentaje_nuevo: Number(form.porcentaje_nuevo),
+        ...(user?.rol === ROLES.INGENIERO
+          ? {}
+          : { ingeniero_id: Number(form.ingeniero_id) }),
+      });
+      nav('/obra/avances');
+    } catch (err) {
+      setError(err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Screen
+      title="Registrar avance"
+      subtitle="El avance nuevo debe superar el porcentaje actual de la partida."
+    >
+      <Notice error={error} />
+
+      <Panel title="Datos del reporte">
+        <form className="form-grid" onSubmit={submit}>
+          <Field label="Partida">
+            <select
+              required
+              name="partida_id"
+              value={form.partida_id}
+              onChange={change}
+            >
+              <option value="">Seleccione una partida</option>
+              {partidas.map((p) => (
+                <option value={p.id} key={p.id}>
+                  {p.codigo_partida} — {p.nombre} ({p.porcentaje_avance}%)
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          {user?.rol !== ROLES.INGENIERO && (
+            <Field label="Ingeniero responsable">
+              <select
+                required
+                name="ingeniero_id"
+                value={form.ingeniero_id}
+                onChange={change}
+              >
+                <option value="">Seleccione ingeniero</option>
+                {ingenieros.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.nombres} {e.apellidos}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          )}
+
+          <Field label="Nuevo porcentaje (%)">
+            <input
+              required
+              type="number"
+              min="1"
+              max="100"
+              step="0.01"
+              name="porcentaje_nuevo"
+              value={form.porcentaje_nuevo}
+              onChange={change}
+            />
+          </Field>
+
+          <Field label="Observaciones">
+            <textarea
+              rows="4"
+              name="observaciones"
+              value={form.observaciones}
+              onChange={change}
+            />
+          </Field>
+
+          <div className="form-actions">
+            <button className="btn btn-primary" disabled={busy}>
+              {busy ? 'Guardando…' : 'Guardar avance'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => nav(-1)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </Panel>
+    </Screen>
+  );
+}
