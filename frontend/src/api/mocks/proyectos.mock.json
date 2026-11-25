@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "codigo": "PRJ-001",
+      "nombre": "Residencial Las Flores",
+      "tipo_proyecto": "CASAS_SERIE",
+      "ubicacion": "Santa Tecla",
+      "fase_actual": "OBRA_GRIS",
+      "estado": "EN_EJECUCION",
+      "presupuesto_total": 250000,
+      "fecha_inicio_estimada": "2026-01-15",
+      "puede_iniciar_obra": true,
+      "permisos": { "opamss": true, "marn": true, "anda": false }
+    },
+    {
+      "id": 2,
+      "codigo": "PRJ-002",
+      "nombre": "Apartamentos Vista Verde",
+      "tipo_proyecto": "APARTAMENTOS",
+      "ubicacion": "Antiguo Cuscatlán",
+      "fase_actual": "DISENO",
+      "estado": "PLANIFICACION",
+      "presupuesto_total": 500000,
+      "fecha_inicio_estimada": "2026-05-01",
+      "puede_iniciar_obra": false,
+      "permisos": { "opamss": false, "marn": false, "anda": false }
+    }
+  ]
+}

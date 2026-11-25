@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "data": {
+    "materiales": [
+      { "id": 1, "codigo": "MAT-001", "nombre": "Cemento", "unidad_medida": "bolsa", "costo_unitario": 8.5, "stock_minimo": 100, "stock_central": 500, "stock_total": 580 },
+      { "id": 2, "codigo": "MAT-002", "nombre": "Varilla 3/8", "unidad_medida": "unidad", "costo_unitario": 4.2, "stock_minimo": 300, "stock_central": 1200, "stock_total": 1200 }
+    ],
+    "bodegas": [
+      { "id": 1, "nombre": "Bodega Central", "tipo": "CENTRAL", "ubicacion": "San Salvador", "proyecto_id": null, "proyecto": null },
+      { "id": 2, "nombre": "Bodega Obra Residencial Las Flores", "tipo": "PROYECTO", "ubicacion": "Santa Tecla", "proyecto_id": 1, "proyecto": "Residencial Las Flores" }
+    ],
+    "stockBodega": [
+      { "id": 1, "material_id": 1, "codigo": "MAT-001", "nombre": "Cemento", "unidad_medida": "bolsa", "stock_actual": 80, "stock_minimo": 100, "bajo_minimo": true }
+    ],
+    "traslados": [
+      { "id": 1, "codigo_traslado": "TRS-00001", "responsable": "Juan Pérez", "observaciones": null, "fecha_traslado": "2026-10-01", "bodega_origen": "Bodega Central", "bodega_destino": "Bodega Obra Residencial Las Flores" }
+    ]
+  }
+}

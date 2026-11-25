@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "data": {
+    "empleados": [
+      { "id": 1, "nombre": "Juan Pérez", "tipoPlanilla": "administrativa", "salarioBase": 800 },
+      { "id": 2, "nombre": "Carlos Gómez", "tipoPlanilla": "campo", "pagoPorDia": 15 }
+    ]
+  }
+}

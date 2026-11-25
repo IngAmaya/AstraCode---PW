@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "data": {
+    "clientes": [
+      { "id": 1, "nombre": "María López", "email": "maria@example.com", "proyectoInteres": "Residencial Las Flores" }
+    ],
+    "planesPago": [
+      { "id": 1, "clienteId": 1, "prima": 2000, "cuotas": 60, "montoCuota": 350 }
+    ]
+  }
+}

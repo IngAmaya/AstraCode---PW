@@ -1,0 +1,14 @@
+const IVA = 0.13;
+const ISSS = 0.03;
+const AFP = 0.0725;
+
+const ROLES = {
+  ADMIN: 'ADMIN',
+  GERENTE: 'GERENTE_PROYECTO',
+  INGENIERO: 'INGENIERO_RESIDENTE',
+  BODEGUERO: 'BODEGUERO',
+  VENTAS: 'VENTAS',
+  RRHH: 'RRHH',
+};
+
+module.exports = { IVA, ISSS, AFP, ROLES };
